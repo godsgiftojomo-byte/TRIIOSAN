@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createUntypedClient } from '@/lib/supabase/untyped'
+
 import { getAnthropicClient, TRIAGE_MODEL } from '@/lib/anthropic/client'
 import { buildChecklistPrompt, parseModelJson } from '@/lib/anthropic/prompts'
 import type { Language } from '@/lib/supabase/types'
