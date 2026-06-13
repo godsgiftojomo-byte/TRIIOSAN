@@ -12,7 +12,6 @@ import type { UserRole } from '@/lib/supabase/types'
 
 function LoginForm() {
   const searchParams = useSearchParams()
-  const searchParams = useSearchParams()
   const { t } = useLanguage()
   const supabase = createClient()
 
@@ -49,6 +48,11 @@ function LoginForm() {
 
     const role = (profile as { role: UserRole } | null)?.role
 
+    // Use a hard navigation (not router.push) so the server re-reads
+    // the freshly-set auth cookies on first render. router.push can
+    // sometimes render the destination server component before the
+    // new session cookies have propagated, causing requireProfile()
+    // to see no user and bounce back to /signup.
     if (role === 'clinician') {
       window.location.href = '/clinician'
     } else {
