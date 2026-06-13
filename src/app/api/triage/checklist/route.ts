@@ -11,7 +11,7 @@ interface ChecklistResponse {
 
 export async function POST(request: Request) {
   // Require auth — only logged-in patients can call this
-  const supabase = createClient()
+  const supabase = createUntypedClient()
   const { data: authData, error: authError } = await supabase.auth.getUser()
   if (authError || !authData.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
