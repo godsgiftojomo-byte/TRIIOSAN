@@ -11,14 +11,15 @@ body {
   @apply bg-cream text-ink font-body;
 }
 
-/* Visible keyboard focus for accessibility */
+/* Visible keyboard focus for accessibility - Improved */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid #E8622D;           /* ember.DEFAULT color */
+  outline: 2px solid rgb(232 98 45 / 0.8);   /* ember color with opacity */
   outline-offset: 2px;
+  border-radius: 0.375rem; /* Consistent with your rounded-lg */
 }
 
 /* Respect reduced motion preference */
