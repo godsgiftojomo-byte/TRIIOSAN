@@ -21,13 +21,11 @@ function LoginForm() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [debug, setDebug] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    setDebug(null)
 
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
@@ -36,12 +34,11 @@ function LoginForm() {
 
     if (signInError || !data.user) {
       setError(signInError?.message || t('auth.error.generic'))
-      setDebug(`STEP 1 FAILED: signInError=${JSON.stringify(signInError)} data=${JSON.stringify(data)}`)
       setLoading(false)
       return
     }
 
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase
       .from('profiles')
       .select('role')
       .eq('id', data.user.id)
@@ -51,11 +48,11 @@ function LoginForm() {
 
     const role = (profile as { role: UserRole } | null)?.role
 
-    setDebug(
-      `STEP 1 OK: userId=${data.user.id} | STEP 2: profile=${JSON.stringify(
-        profile
-      )} profileError=${JSON.stringify(profileError)} role=${role}`
-    )
+    if (role === 'clinician') {
+      window.location.href = '/clinician'
+    } else {
+      window.location.href = '/dashboard'
+    }
   }
 
   return (
@@ -103,21 +100,6 @@ function LoginForm() {
             <p className="rounded-lg bg-urgency-emergency-bg p-3 text-sm text-urgency-emergency">
               {error}
             </p>
-          )}
-
-          {debug && (
-            <div className="rounded-lg border border-ink/10 bg-ink/5 p-3 text-xs break-all text-ink/80">
-              <p className="font-semibold mb-1">DEBUG (temporary):</p>
-              <p>{debug}</p>
-              <div className="mt-2 flex gap-3">
-                <a href="/dashboard" className="font-semibold text-ember underline">
-                  Go to /dashboard manually
-                </a>
-                <a href="/clinician" className="font-semibold text-ember underline">
-                  Go to /clinician manually
-                </a>
-              </div>
-            </div>
           )}
 
           <button type="submit" disabled={loading} className="btn-primary w-full">
