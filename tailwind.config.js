@@ -21,6 +21,7 @@ module.exports = {
           50: '#FFF6F1',
         },
         cream: '#FBF6F0',
+
         // Urgency semantics
         urgency: {
           emergency: '#C23B22',
@@ -41,27 +42,6 @@ module.exports = {
       },
       boxShadow: {
         card: '0 1px 3px 0 rgba(26, 36, 33, 0.08), 0 1px 2px -1px rgba(26, 36, 33, 0.08)',
-      },
-    },
-  },
-  plugins: [],
-}
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        ink: {
-          DEFAULT: '#your-hex-color',  // e.g. '#1a1a1a' or whatever your "ink" color is
-          // You can add more shades if needed:
-          // 50: '#f5f5f5',
-          // 900: '#111111',
-        },
       },
     },
   },
