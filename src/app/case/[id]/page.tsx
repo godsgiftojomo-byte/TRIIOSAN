@@ -54,13 +54,13 @@ export default async function CaseDetailPage({ params }: { params: { id: string 
   // showing your own name back to you is redundant.
   let patientName: string | undefined
   if (isClinician) {
-    const { data: patientProfile } = await supabase
+        const { data: patientProfile } = await supabase
       .from('profiles')
       .select('full_name')
       .eq('id', typedCase.patient_id)
       .single()
-    patientName = patientProfile?.full_name
-  }
+    patientName = (patientProfile as { full_name: string } | null)?.full_name
+
 
   return (
     <div className="min-h-screen">
