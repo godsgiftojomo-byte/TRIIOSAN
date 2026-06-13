@@ -14,53 +14,45 @@ export default async function CaseDetailPage({ params }: { params: { id: string 
   const { userId, profile } = await requireProfile()
   const supabase = createClient()
 
-  const { data: triageCase, error: caseError } = await supabase
+  const { data: triageCaseRaw, error: caseError } = await supabase
     .from('triage_cases')
     .select('*')
     .eq('id', params.id)
     .single()
 
+  const triageCase = triageCaseRaw as TriageCase | null
+
   if (caseError || !triageCase) {
-    // Either it doesn't exist, or RLS hid it (e.g. a patient trying to
-    // view someone else's case). Either way, send them home.
     redirect(profile.role === 'clinician' ? '/clinician' : '/dashboard')
   }
 
   const typedCase = triageCase as TriageCase
 
-  // Extra guard: a patient may only view their own case.
-  // (RLS already enforces this at the query level for patients, but a
-  // clinician querying a case that happens to belong to someone else
-  // would still succeed under the "clinicians can view all cases" policy —
-  // that's correct for clinicians, but a patient row would never reach
-  // here unless it's theirs, since RLS would return no row at all.)
   if (profile.role === 'patient' && typedCase.patient_id !== userId) {
     redirect('/dashboard')
   }
 
-  const { data: messages } = await supabase
+  const { data: messagesRaw } = await supabase
     .from('case_messages')
     .select('*')
     .eq('case_id', params.id)
     .order('created_at', { ascending: true })
 
+  const messages = (messagesRaw || []) as CaseMessage[]
+
   const isClinician = profile.role === 'clinician'
   const isVerifiedClinician = isClinician && profile.verification_status === 'verified'
   const isOpen = typedCase.status === 'open'
 
-  // For clinicians, look up the patient's name to show on the case
-  // summary. Allowed under the "Clinicians can view patient profiles"
-  // RLS policy. Patients viewing their own case don't need this —
-  // showing your own name back to you is redundant.
   let patientName: string | undefined
   if (isClinician) {
-        const { data: patientProfile } = await supabase
+    const { data: patientProfile } = await supabase
       .from('profiles')
       .select('full_name')
       .eq('id', typedCase.patient_id)
       .single()
     patientName = (patientProfile as { full_name: string } | null)?.full_name
-
+  }
 
   return (
     <div className="min-h-screen">
@@ -82,14 +74,10 @@ export default async function CaseDetailPage({ params }: { params: { id: string 
             caseId={typedCase.id}
             currentUserId={userId}
             currentUserRole={profile.role}
-            initialMessages={(messages || []) as CaseMessage[]}
+            initialMessages={messages}
             disabled={!isOpen}
           />
 
-          {/* Clinician-only: appointment scheduling, only while the
-              case is open. Gated on verification — a pending clinician
-              can still view the case (per RLS) but should not be able
-              to act on it. */}
           {isClinician && isOpen && isVerifiedClinician && (
             <AppointmentForm caseId={typedCase.id} />
           )}
