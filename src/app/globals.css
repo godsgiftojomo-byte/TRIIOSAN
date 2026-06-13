@@ -17,7 +17,7 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid theme('colors.ember.DEFAULT');
+  outline: 2px solid #E8622D;           /* ember.DEFAULT color */
   outline-offset: 2px;
 }
 
