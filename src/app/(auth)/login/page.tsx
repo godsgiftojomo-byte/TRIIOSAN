@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Wordmark } from '@/components/Wordmark'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { useLanguage } from '@/lib/i18n/LanguageContext'
+import type { UserRole } from '@/lib/supabase/types'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -38,7 +39,6 @@ export default function LoginPage() {
       return
     }
 
-    // Look up the profile to decide where to send them
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
@@ -47,7 +47,9 @@ export default function LoginPage() {
 
     setLoading(false)
 
-    if (profile?.role === 'clinician') {
+    const role = (profile as { role: UserRole } | null)?.role
+
+    if (role === 'clinician') {
       router.push('/clinician')
     } else {
       router.push('/dashboard')
