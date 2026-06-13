@@ -11,6 +11,7 @@ export async function requireProfile(requiredRole?: UserRole): Promise<{
   const { data: authData, error: authError } = await supabase.auth.getUser()
 
   if (authError || !authData.user) {
+    console.error('[requireProfile] no auth user', { authError })
     redirect('/login')
   }
 
@@ -23,6 +24,10 @@ export async function requireProfile(requiredRole?: UserRole): Promise<{
   const profile = profileRaw as Profile | null
 
   if (profileError || !profile) {
+    console.error('[requireProfile] no profile', {
+      userId: authData.user.id,
+      profileError,
+    })
     redirect('/signup')
   }
 
