@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createUntypedClient } from '@/lib/supabase/untyped'
 import { getAnthropicClient, TRIAGE_MODEL } from '@/lib/anthropic/client'
 import { buildAssessmentPrompt, parseModelJson } from '@/lib/anthropic/prompts'
 import { checkRedFlags, applyRedFlagOverride } from '@/lib/triage/redFlags'
@@ -14,7 +14,7 @@ interface AssessmentResponse {
 const VALID_URGENCY: Urgency[] = ['emergency', 'urgent', 'routine']
 
 export async function POST(request: Request) {
-  const supabase = createClient()
+  const supabase = createUntypedClient()
   const { data: authData, error: authError } = await supabase.auth.getUser()
   if (authError || !authData.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -29,11 +29,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'complaint is required' }, { status: 400 })
   }
 
-  // --- Run the red-flag rule check on ALL patient-provided text ---
   const combinedText = [complaint, ...checklist.map((c) => c.answer || '')].join(' ')
   const redFlags = checkRedFlags(combinedText)
 
-  // --- Get the LLM's classification ---
   let aiResult: AssessmentResponse | null = null
 
   try {
@@ -66,8 +64,6 @@ export async function POST(request: Request) {
     }
   } catch (err) {
     console.error('triage assessment error:', err)
-    // If the AI call fails entirely, fall back to a conservative default.
-    // If red flags were found, this still gets escalated below.
     aiResult = {
       urgency: 'routine',
       assessment: FALLBACK_ASSESSMENT[language] || FALLBACK_ASSESSMENT.en,
@@ -75,10 +71,8 @@ export async function POST(request: Request) {
     }
   }
 
-  // --- Apply rule-based override (can only escalate) ---
   const { urgency, source } = applyRedFlagOverride(aiResult.urgency, redFlags)
 
-  // --- Save the case ---
   const { data: caseRow, error: insertError } = await supabase
     .from('triage_cases')
     .insert({
@@ -113,6 +107,6 @@ const FALLBACK_ASSESSMENT: Record<Language, string> = {
   en: "We've recorded what you've shared. A clinician will review your case shortly — you can continue the conversation below.",
   yo: 'A ti gba ohun tí o sọ. Dókítà yóò wo ọ̀rọ̀ rẹ láìpẹ́ — o lè tẹ̀síwájú ìfọ̀rọ̀wérọ̀ ní ìsàlẹ̀.',
   ha: 'Mun rubuta abin da ka faɗa. Likita zai duba lamarinku ba da daɗewa — za ka iya cigaba da tattaunawa a ƙasa.',
-  ig: 'Anyị edebanyela ihe ị kọwara. Dọkịta ga-elele okwu gị n’oge na-adịghị anya — ị nwere ike ịga n’ihu na mkparịta ụka n’okpuru.',
+  ig: 'Anyị edebanyela ihe ị kọwara. Dọkịta ga-elele okwu gị n\'oge na-adịghị anya — ị nwere ike ịga n\'ihu na mkparịta ụka n\'okpuru.',
   pcm: 'We don record wetin you talk. Clinician go review your case soon — you fit continue the gist for down.',
 }
