@@ -8,7 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Wordmark } from '@/components/Wordmark'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { useLanguage } from '@/lib/i18n/LanguageContext'
-import type { UserRole, Language } from '@/lib/supabase/types'
+import type { UserRole, Language, Profile } from '@/lib/supabase/types'
 import { LANGUAGES } from '@/lib/i18n/translations'
 
 export default function SignupPage() {
@@ -48,7 +48,7 @@ export default function SignupPage() {
       return
     }
 
-    const { error: profileError } = await supabase.from('profiles').insert({
+    const profilePayload: Partial<Profile> & { id: string; role: UserRole; full_name: string } = {
       id: authData.user.id,
       role,
       full_name: fullName,
@@ -61,7 +61,9 @@ export default function SignupPage() {
             verification_status: 'pending' as const,
           }
         : {}),
-    })
+    }
+
+    const { error: profileError } = await supabase.from('profiles').insert(profilePayload)
 
     if (profileError) {
       setError(profileError.message)
@@ -72,8 +74,6 @@ export default function SignupPage() {
     setSuccess(true)
     setLoading(false)
 
-    // If email confirmation is disabled in Supabase, the user has a session already.
-    // Redirect to login either way — simplest and most predictable for the demo.
     setTimeout(() => {
       router.push(`/login?role=${role}`)
     }, 1200)
