@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Send, Loader2 } from 'lucide-react'
 import { createBrowserClient } from '@supabase/ssr'
-
 import { useLanguage } from '@/lib/i18n/LanguageContext'
 import type { CaseMessage, UserRole } from '@/lib/supabase/types'
 
@@ -21,7 +20,10 @@ export function MessageThread({
   disabled?: boolean
 }) {
   const { t } = useLanguage()
-  createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   const [messages, setMessages] = useState<CaseMessage[]>(initialMessages)
   const [draft, setDraft] = useState('')
