@@ -1,22 +1,19 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import type { Profile, TriageCase } from '@/lib/supabase/types'
+import { createUntypedClient } from '@/lib/supabase/untyped'
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
-  const supabase = createClient()
+  const supabase = createUntypedClient()
 
   const { data: authData, error: authError } = await supabase.auth.getUser()
   if (authError || !authData.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { data: profileRaw, error: profileError } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('role, verification_status')
     .eq('id', authData.user.id)
     .single()
-
-  const profile = profileRaw as Pick<Profile, 'role' | 'verification_status'> | null
 
   if (
     profileError ||
@@ -44,13 +41,11 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Invalid datetime' }, { status: 400 })
   }
 
-  const { data: existingCaseRaw, error: caseError } = await supabase
+  const { data: existingCase, error: caseError } = await supabase
     .from('triage_cases')
     .select('id, status, assigned_clinician_id')
     .eq('id', params.id)
     .single()
-
-  const existingCase = existingCaseRaw as Pick<TriageCase, 'id' | 'status' | 'assigned_clinician_id'> | null
 
   if (caseError || !existingCase) {
     return NextResponse.json({ error: 'Case not found' }, { status: 404 })
@@ -60,7 +55,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Case is already closed' }, { status: 409 })
   }
 
-  const { data: updatedCaseRaw, error: updateError } = await supabase
+  const { data: updatedCase, error: updateError } = await supabase
     .from('triage_cases')
     .update({
       appointment_facility: facility,
@@ -72,8 +67,6 @@ export async function POST(request: Request, { params }: { params: { id: string 
     .eq('id', params.id)
     .select()
     .single()
-
-  const updatedCase = updatedCaseRaw as TriageCase | null
 
   if (updateError || !updatedCase) {
     console.error('appointment update error:', updateError)
