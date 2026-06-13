@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
@@ -10,7 +10,7 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { useLanguage } from '@/lib/i18n/LanguageContext'
 import type { UserRole } from '@/lib/supabase/types'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { t } = useLanguage()
@@ -121,5 +121,13 @@ export default function LoginPage() {
         </form>
       </main>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   )
 }
