@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import type { Profile } from '@/lib/supabase/types'
+import type { Profile, TriageCase } from '@/lib/supabase/types'
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   const supabase = createClient()
@@ -10,7 +10,6 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Confirm the caller is a verified clinician
   const { data: profileRaw, error: profileError } = await supabase
     .from('profiles')
     .select('role, verification_status')
@@ -40,18 +39,18 @@ export async function POST(request: Request, { params }: { params: { id: string 
     )
   }
 
-  // Basic ISO datetime sanity check
   const parsedDate = new Date(datetime)
   if (Number.isNaN(parsedDate.getTime())) {
     return NextResponse.json({ error: 'Invalid datetime' }, { status: 400 })
   }
 
-  // Confirm the case exists and is currently open before closing it
-  const { data: existingCase, error: caseError } = await supabase
+  const { data: existingCaseRaw, error: caseError } = await supabase
     .from('triage_cases')
     .select('id, status, assigned_clinician_id')
     .eq('id', params.id)
     .single()
+
+  const existingCase = existingCaseRaw as Pick<TriageCase, 'id' | 'status' | 'assigned_clinician_id'> | null
 
   if (caseError || !existingCase) {
     return NextResponse.json({ error: 'Case not found' }, { status: 404 })
