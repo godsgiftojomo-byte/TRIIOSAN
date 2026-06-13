@@ -60,7 +60,6 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Case is already closed' }, { status: 409 })
   }
 
-  // @ts-expect-error — supabase-ssr misresolves .update() payload type as never
   const { data: updatedCaseRaw, error: updateError } = await supabase
     .from('triage_cases')
     .update({
