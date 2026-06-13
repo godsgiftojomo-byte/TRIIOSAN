@@ -1,18 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import type { Profile } from '@/lib/supabase/types'
 
-/**
- * Clinician action: schedule an appointment and close the case.
- *
- * - Requires an authenticated, VERIFIED clinician.
- * - Sets appointment_facility, appointment_purpose, appointment_datetime.
- * - Sets status = 'closed' and assigned_clinician_id = current clinician
- *   (if not already assigned).
- * - The case (and its message thread) remains visible to the patient for
- *   reference, but MessageThread is rendered with `disabled` once closed —
- *   per spec, a closed case cannot be reopened; the patient starts a new
- *   check-in for any further concern.
- */
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   const supabase = createClient()
 
@@ -22,11 +11,13 @@ export async function POST(request: Request, { params }: { params: { id: string 
   }
 
   // Confirm the caller is a verified clinician
-  const { data: profile, error: profileError } = await supabase
+  const { data: profileRaw, error: profileError } = await supabase
     .from('profiles')
     .select('role, verification_status')
     .eq('id', authData.user.id)
     .single()
+
+  const profile = profileRaw as Pick<Profile, 'role' | 'verification_status'> | null
 
   if (
     profileError ||
