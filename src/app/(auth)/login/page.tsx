@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -11,7 +11,7 @@ import { useLanguage } from '@/lib/i18n/LanguageContext'
 import type { UserRole } from '@/lib/supabase/types'
 
 function LoginForm() {
-  const router = useRouter()
+  const searchParams = useSearchParams()
   const searchParams = useSearchParams()
   const { t } = useLanguage()
   const supabase = createClient()
@@ -50,11 +50,10 @@ function LoginForm() {
     const role = (profile as { role: UserRole } | null)?.role
 
     if (role === 'clinician') {
-      router.push('/clinician')
+      window.location.href = '/clinician'
     } else {
-      router.push('/dashboard')
+      window.location.href = '/dashboard'
     }
-    router.refresh()
   }
 
   return (
