@@ -46,3 +46,24 @@ module.exports = {
   },
   plugins: [],
 }
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        ink: {
+          DEFAULT: '#your-hex-color',  // e.g. '#1a1a1a' or whatever your "ink" color is
+          // You can add more shades if needed:
+          // 50: '#f5f5f5',
+          // 900: '#111111',
+        },
+      },
+    },
+  },
+  plugins: [],
+}
