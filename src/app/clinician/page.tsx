@@ -4,7 +4,7 @@ import { requireProfile } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { AppNav } from '@/components/AppNav'
 import { t } from '@/lib/i18n/translations'
-import type { TriageCase, Urgency } from '@/lib/supabase/types'
+import type { TriageCase, Urgency, Profile } from '@/lib/supabase/types'
 
 const URGENCY_CONFIG: Record<Urgency, { icon: typeof AlertTriangle; color: string; bg: string; rank: number }> = {
   emergency: { icon: AlertTriangle, color: 'text-urgency-emergency', bg: 'bg-urgency-emergency-bg', rank: 0 },
@@ -12,8 +12,6 @@ const URGENCY_CONFIG: Record<Urgency, { icon: typeof AlertTriangle; color: strin
   routine: { icon: CheckCircle2, color: 'text-urgency-routine', bg: 'bg-urgency-routine-bg', rank: 2 },
 }
 
-// Cases with no urgency yet (e.g. the AI/rule pipeline didn't set one —
-// shouldn't normally happen, but the schema allows null) sort last.
 const UNRANKED = 99
 
 export default async function ClinicianQueuePage() {
@@ -22,11 +20,6 @@ export default async function ClinicianQueuePage() {
   const lang = profile.preferred_language
   const isVerified = profile.verification_status === 'verified'
 
-  // Verified clinicians can see the full open queue (per RLS). A pending
-  // clinician's "Clinicians can view cases" RLS policy check will fail
-  // (it requires verification_status = 'verified'), so this query will
-  // simply return no rows for them — which is the correct behavior:
-  // they see the pending banner and an empty queue, not an error.
   const { data: cases } = await supabase
     .from('triage_cases')
     .select('*')
@@ -35,26 +28,24 @@ export default async function ClinicianQueuePage() {
 
   const typedCases = (cases || []) as TriageCase[]
 
-  // Sort by urgency (emergency first), preserving the created_at order
-  // (oldest first / FIFO) within each urgency tier.
   const sortedCases = [...typedCases].sort((a, b) => {
     const rankA = a.urgency ? URGENCY_CONFIG[a.urgency].rank : UNRANKED
     const rankB = b.urgency ? URGENCY_CONFIG[b.urgency].rank : UNRANKED
     return rankA - rankB
   })
 
-  // Look up patient names for display. Patients are visible to clinicians
-  // under the "Clinicians can view patient profiles" RLS policy.
   const patientIds = [...new Set(typedCases.map((c) => c.patient_id))]
   const patientNames = new Map<string, string>()
 
   if (patientIds.length > 0) {
-    const { data: patientProfiles } = await supabase
+    const { data: patientProfilesRaw } = await supabase
       .from('profiles')
       .select('id, full_name')
       .in('id', patientIds)
 
-    for (const p of patientProfiles || []) {
+    const patientProfiles = (patientProfilesRaw || []) as Pick<Profile, 'id' | 'full_name'>[]
+
+    for (const p of patientProfiles) {
       patientNames.set(p.id, p.full_name)
     }
   }
