@@ -27,7 +27,6 @@ export function MessageThread({
   const [sending, setSending] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
-  // Real-time subscription for new messages on this case
   useEffect(() => {
     const channel = supabase
       .channel(`case_messages:${caseId}`)
@@ -42,7 +41,6 @@ export function MessageThread({
         (payload) => {
           const newMessage = payload.new as CaseMessage
           setMessages((prev) => {
-            // Avoid duplicating a message we just optimistically added
             if (prev.some((m) => m.id === newMessage.id)) return prev
             return [...prev, newMessage]
           })
@@ -68,7 +66,7 @@ export function MessageThread({
     setSending(true)
     setDraft('')
 
-    const { data, error } = await supabase
+    const { data: dataRaw, error } = await supabase
       .from('case_messages')
       .insert({
         case_id: caseId,
@@ -79,14 +77,16 @@ export function MessageThread({
       .select()
       .single()
 
+    const data = dataRaw as CaseMessage | null
+
     if (!error && data) {
       setMessages((prev) => {
         if (prev.some((m) => m.id === data.id)) return prev
-        return [...prev, data as CaseMessage]
+        return [...prev, data]
       })
     } else {
       console.error('send message error:', error)
-      setDraft(text) // restore on failure
+      setDraft(text)
     }
 
     setSending(false)
