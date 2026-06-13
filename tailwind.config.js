@@ -7,18 +7,18 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
+            colors: {
         // Primary brand
         ink: {
-          DEFAULT: '#1A2421',
-          light: '#2C3A35',
-          50: '#F2F4F3',
+          DEFAULT: 'rgb(26 36 33)',     // #1A2421
+          light: 'rgb(44 58 53)',       // #2C3A35
+          50: 'rgb(242 244 243)',       // #F2F4F3
         },
         ember: {
-          DEFAULT: '#E8622D',
-          dark: '#C94F1F',
-          light: '#FCE8DD',
-          50: '#FFF6F1',
+          DEFAULT: 'rgb(232 98 45)',    // #E8622D
+          dark: 'rgb(201 79 31)',       // #C94F1F
+          light: 'rgb(252 232 221)',    // #FCE8DD
+          50: 'rgb(255 246 241)',       // #FFF6F1
         },
         cream: '#FBF6F0',
 
@@ -33,17 +33,3 @@ module.exports = {
         },
         sage: '#8A9A8E',
       },
-      fontFamily: {
-        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
-        body: ['var(--font-body)', 'system-ui', 'sans-serif'],
-      },
-      borderRadius: {
-        DEFAULT: '0.5rem',
-      },
-      boxShadow: {
-        card: '0 1px 3px 0 rgba(26, 36, 33, 0.08), 0 1px 2px -1px rgba(26, 36, 33, 0.08)',
-      },
-    },
-  },
-  plugins: [],
-}
