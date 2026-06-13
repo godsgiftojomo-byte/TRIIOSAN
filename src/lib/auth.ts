@@ -2,12 +2,6 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Profile, UserRole } from '@/lib/supabase/types'
 
-/**
- * Fetches the current authenticated user's profile.
- * Redirects to /login if not authenticated.
- * If `requiredRole` is provided and the profile's role doesn't match,
- * redirects to that role's home instead.
- */
 export async function requireProfile(requiredRole?: UserRole): Promise<{
   userId: string
   profile: Profile
@@ -20,15 +14,15 @@ export async function requireProfile(requiredRole?: UserRole): Promise<{
     redirect('/login')
   }
 
-  const { data: profile, error: profileError } = await supabase
+  const { data: profileRaw, error: profileError } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', authData.user.id)
     .single()
 
+  const profile = profileRaw as Profile | null
+
   if (profileError || !profile) {
-    // Authenticated but no profile row — shouldn't normally happen,
-    // send back to signup to complete profile creation.
     redirect('/signup')
   }
 
@@ -36,5 +30,5 @@ export async function requireProfile(requiredRole?: UserRole): Promise<{
     redirect(profile.role === 'clinician' ? '/clinician' : '/dashboard')
   }
 
-  return { userId: authData.user.id, profile: profile as Profile }
+  return { userId: authData.user.id, profile }
 }
