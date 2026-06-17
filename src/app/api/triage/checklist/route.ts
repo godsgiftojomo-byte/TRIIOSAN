@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createUntypedClient } from '@/lib/supabase/untyped'
+import Anthropic from '@anthropic-ai/sdk'
 
 import { getAnthropicClient, TRIAGE_MODEL } from '@/lib/anthropic/client'
 import { buildChecklistPrompt, parseModelJson } from '@/lib/anthropic/prompts'
@@ -10,7 +11,6 @@ interface ChecklistResponse {
 }
 
 export async function POST(request: Request) {
-  // Require auth — only logged-in patients can call this
   const supabase = createUntypedClient()
   const { data: authData, error: authError } = await supabase.auth.getUser()
   if (authError || !authData.user) {
@@ -51,10 +51,16 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ questions: parsed.questions.slice(0, 6) })
   } catch (err) {
-    console.error('checklist generation error:', err)
+    if (err instanceof Anthropic.APIError) {
+      console.error('checklist generation error [Anthropic.APIError]:', {
+        status: err.status,
+        name: err.name,
+        message: err.message,
+      })
+    } else {
+      console.error('checklist generation error [unknown]:', err)
+    }
 
-    // Fallback: a generic, safe checklist so the flow can continue
-    // even if the model call fails or returns malformed JSON.
     const fallback: Record<Language, string[]> = {
       en: [
         'How long have you had this problem?',
@@ -93,6 +99,14 @@ export async function POST(request: Request) {
       ],
     }
 
-    return NextResponse.json({ questions: fallback[language] || fallback.en })
+    return NextResponse.json({
+      questions: fallback[language] || fallback.en,
+      _debugError:
+        err instanceof Anthropic.APIError
+          ? `[Anthropic.APIError ${err.status}] ${err.message}`
+          : err instanceof Error
+            ? `[${err.name}] ${err.message}`
+            : String(err),
+    })
   }
 }
