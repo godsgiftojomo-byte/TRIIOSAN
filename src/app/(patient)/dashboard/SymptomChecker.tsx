@@ -24,7 +24,8 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
   const [questions, setQuestions] = useState<string[]>([])
   const [answers, setAnswers] = useState<string[]>([])
   const [result, setResult] = useState<AssessResult | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [debugInfo, setDebugInfo] = useState<string | null>(null)
+
 
   // Use the active UI language for the LLM calls, falling back to the
   // patient's stored preference. The patient can write in any language
@@ -48,14 +49,13 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
       if (!res.ok) throw new Error('Failed to generate checklist')
 
       const data = await res.json()
-      setQuestions(data.questions)
-      setAnswers(new Array(data.questions.length).fill(''))
-      setStep('checklist')
-    } catch (err) {
-      console.error(err)
-      setError(t('common.error'))
-      setStep('complaint')
-    }
+if (data._debugError) {
+  setDebugInfo(`AI call failed, using fallback: ${data._debugError}`)
+} else {
+  setDebugInfo(null)
+}
+setQuestions(data.questions)
+
   }
 
   async function handleChecklistSubmit(e: React.FormEvent) {
@@ -99,7 +99,13 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
         <h1 className="font-display text-xl font-extrabold text-ink sm:text-2xl">
           {t('case.step1Title')}
         </h1>
-        <p className="mt-2 text-sm leading-relaxed text-ink/60">{t('case.step1Prompt')}</p>
+     {debugInfo && (
+  <div className="mt-3 rounded-lg border border-ink/10 bg-ink/5 p-3 text-xs break-all text-ink/80">
+    <p className="font-semibold mb-1">DEBUG (temporary):</p>
+    <p>{debugInfo}</p>
+  </div>
+)}
+
 
         <form onSubmit={handleComplaintSubmit} className="mt-5">
           <textarea
