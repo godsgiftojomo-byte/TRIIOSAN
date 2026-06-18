@@ -55,6 +55,15 @@ export interface CaseMessage {
 }
 
 export interface Database {
+  // Newer versions of @supabase/supabase-js (and the @supabase/ssr wrapper
+  // around it) expect a Database type to carry this metadata key. Without
+  // it, the client's internal generics fail to resolve and every query's
+  // inferred type collapses to `never` — which is what was happening here.
+  // "12" matches supabase-js's own internal default when this key is absent,
+  // so this isn't a guess: https://github.com/supabase/supabase-js/issues/1483
+  __InternalSupabase: {
+    PostgrestVersion: '12'
+  }
   public: {
     Tables: {
       profiles: {
