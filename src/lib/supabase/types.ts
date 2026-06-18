@@ -1,11 +1,8 @@
-// Hand-written types matching supabase/schema.sql.
-// If you change the schema, update these to match.
-
 export type UserRole = 'patient' | 'clinician'
 export type Language = 'en' | 'yo' | 'ha' | 'ig' | 'pcm'
 export type VerificationStatus = 'pending' | 'verified'
 export type Urgency = 'emergency' | 'urgent' | 'routine'
-export type UrgencySource = 'ai' | 'rule_override'
+export type UrgencySource = 'ai' | 'red-flag' | 'protocol' | 'fallback'
 export type CaseStatus = 'open' | 'closed'
 
 export interface ChecklistItem {
@@ -30,11 +27,14 @@ export interface TriageCase {
   patient_id: string
   primary_complaint: string
   complaint_language: string
-  checklist: ChecklistItem[]
+  checklist_qa: ChecklistItem[]
   ai_assessment: string | null
+  ai_assessment_detail: string | null
   urgency: Urgency | null
   urgency_source: UrgencySource | null
   recommended_tests: string[]
+  immediate_action: string | null
+  matched_protocol_id: string | null
   status: CaseStatus
   assigned_clinician_id: string | null
   appointment_facility: string | null
@@ -50,12 +50,10 @@ export interface CaseMessage {
   sender_id: string
   sender_role: UserRole
   message: string
+  read_at: string | null
   created_at: string
 }
 
-// Minimal Database type for Supabase client typing.
-// Not exhaustive (no Functions/Enums sections) but enough
-// for typed table access via .from('table_name').
 export interface Database {
   public: {
     Tables: {
