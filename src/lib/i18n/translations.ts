@@ -140,7 +140,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'case.answerPlaceholder': 'Your answer...',
     'case.analyzingDetail': 'Comparing against clinical guidelines...',
     'case.immediateAction': 'What to do now',
-    'case.aiUnavailableNotice': 'AI assessment was unavailable. Your urgency level was determined by our clinical rule system. A clinician will review your case.',
+ 'case.aiUnavailableNotice': 'Reviewed by our clinical rule system. A clinician will review your case.',
+
     'thread.noMessages': 'No messages yet. The clinician will respond here.',
     'thread.closedNotice': 'This case is closed. Start a new check-in for any new concern.',
     'landing.howItWorks': 'How it works',
