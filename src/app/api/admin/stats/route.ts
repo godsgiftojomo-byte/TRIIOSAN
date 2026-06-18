@@ -11,9 +11,18 @@ export async function GET() {
   const supabase = createClient()
 
   const [casesRes, profilesRes, messagesRes] = await Promise.all([
-    supabase.from('triage_cases').select('id, urgency, status, created_at'),
-    supabase.from('profiles').select('id, role, verification_status, created_at'),
-    supabase.from('case_messages').select('id, created_at'),
+    supabase.from('triage_cases').select('id, urgency, status, created_at') as unknown as Promise<{
+      data: { id: string; urgency: string | null; status: string; created_at: string }[] | null
+      error: { message: string } | null
+    }>,
+    supabase.from('profiles').select('id, role, verification_status, created_at') as unknown as Promise<{
+      data: { id: string; role: string; verification_status: string | null; created_at: string }[] | null
+      error: { message: string } | null
+    }>,
+    supabase.from('case_messages').select('id, created_at') as unknown as Promise<{
+      data: { id: string; created_at: string }[] | null
+      error: { message: string } | null
+    }>,
   ])
 
   const cases = casesRes.data || []
@@ -30,7 +39,6 @@ export async function GET() {
     totalClinicians: profiles.filter((p) => p.role === 'clinician').length,
     pendingClinicians: profiles.filter((p) => p.role === 'clinician' && p.verification_status === 'pending').length,
     totalMessages: messagesRes.data?.length || 0,
-    // Cases per day for last 14 days
     recentActivity: getLast14Days(cases),
   }
 
