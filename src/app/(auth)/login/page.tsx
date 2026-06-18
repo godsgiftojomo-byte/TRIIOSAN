@@ -29,11 +29,10 @@ export default function PatientLoginPage() {
       return
     }
 
-    const { data: profile } = (await supabase
-      .from('profiles')
+    const { data: profile } = await (supabase.from('profiles') as any)
       .select('role')
       .eq('id', data.user.id)
-      .single()) as { data: { role: 'patient' | 'clinician' } | null }
+      .single()
 
     if (profile?.role === 'clinician') {
       router.push('/portal')
@@ -44,7 +43,6 @@ export default function PatientLoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Pattern hero strip */}
       <div className="pattern-overlay pattern-strong h-2 bg-ember" />
 
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
