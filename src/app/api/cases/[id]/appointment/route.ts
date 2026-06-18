@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
-import { createUntypedClient } from '@/lib/supabase/untyped'
+import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
-  const supabase = createUntypedClient()
+  const supabase = createClient()
 
   const { data: authData, error: authError } = await supabase.auth.getUser()
   if (authError || !authData.user) {
@@ -15,12 +15,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     .eq('id', authData.user.id)
     .single()
 
-  if (
-    profileError ||
-    !profile ||
-    profile.role !== 'clinician' ||
-    profile.verification_status !== 'verified'
-  ) {
+  if (profileError || !profile || profile.role !== 'clinician' || profile.verification_status !== 'verified') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
@@ -30,10 +25,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
   const datetime: string = (body?.datetime || '').trim()
 
   if (!facility || !purpose || !datetime) {
-    return NextResponse.json(
-      { error: 'facility, purpose, and datetime are all required' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'facility, purpose, and datetime are all required' }, { status: 400 })
   }
 
   const parsedDate = new Date(datetime)
