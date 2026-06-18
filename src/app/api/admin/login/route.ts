@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { randomBytes } from 'crypto'
+import { issueAdminToken } from '@/lib/auth/adminTokens'
 
 /**
  * Admin login — validates against environment variables only.
- * No database user record. Token stored in an httpOnly cookie.
+ * No database user record. Token is a stateless signed token (see
+ * src/lib/auth/adminTokens.ts), stored in an httpOnly cookie.
  */
 export async function POST(request: Request) {
   const body = await request.json()
@@ -23,33 +24,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
   }
 
-  // Issue a session token
-  const token = randomBytes(32).toString('hex')
-  const expires = new Date(Date.now() + 8 * 60 * 60 * 1000) // 8 hours
+  const durationMs = 8 * 60 * 60 * 1000 // 8 hours
+  const token = issueAdminToken(durationMs)
 
-  // Store in cookie store
   const cookieStore = cookies()
   cookieStore.set('admin_token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    expires,
+    expires: new Date(Date.now() + durationMs),
     path: '/',
   })
 
-  // Also store the valid token in memory — in production, use Redis or DB
-  // For demo: store in a module-level Set (resets on cold start, fine for demo)
-  validTokens.add(token)
-  setTimeout(() => validTokens.delete(token), 8 * 60 * 60 * 1000)
-
   return NextResponse.json({ ok: true })
-}
-
-// Module-level token store — survives warm requests, resets on cold start
-// Good enough for a demo; replace with DB/Redis for production
-export const validTokens = new Set<string>()
-
-export function validateAdminToken(token: string | undefined): boolean {
-  if (!token) return false
-  return validTokens.has(token)
 }
