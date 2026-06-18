@@ -29,11 +29,11 @@ export default function ClinicianPortalPage() {
       return
     }
 
-    const { data: profile } = await supabase
+    const { data: profile } = (await supabase
       .from('profiles')
       .select('role')
       .eq('id', data.user.id)
-      .single()
+      .single()) as { data: { role: 'patient' | 'clinician' } | null }
 
     if (profile?.role !== 'clinician') {
       await supabase.auth.signOut()
@@ -53,20 +53,17 @@ export default function ClinicianPortalPage() {
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
-            <Wordmark className="justify-center" />
-            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-dark-border bg-dark-card px-3 py-1.5">
-              <Stethoscope className="h-3.5 w-3.5 text-ember" />
-              <span className="text-xs font-semibold text-dark-muted">Clinician Portal</span>
-            </div>
+            <Wordmark className="justify-center" inverted />
+            <p className="mt-2 flex items-center justify-center gap-1.5 text-sm text-dark-muted">
+              <Stethoscope className="h-4 w-4" />
+              Clinician portal
+            </p>
           </div>
 
-          <div className="rounded-2xl border border-dark-border bg-dark-card p-6 shadow-card-dark">
-            <h1 className="font-display text-lg font-extrabold text-dark-text mb-1">
-              Clinician sign in
+          <div className="rounded-2xl border border-dark-border bg-dark-card p-5 shadow-card">
+            <h1 className="font-display text-lg font-extrabold text-dark-text mb-5">
+              Sign in to your account
             </h1>
-            <p className="text-sm text-dark-muted mb-5">
-              Access your patient queue and case reviews.
-            </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <label className="block">
@@ -81,7 +78,7 @@ export default function ClinicianPortalPage() {
                   autoComplete="email"
                   disabled={loading}
                   className="input"
-                  placeholder="doctor@hospital.ng"
+                  placeholder="you@example.com"
                 />
               </label>
 
@@ -118,21 +115,17 @@ export default function ClinicianPortalPage() {
               )}
 
               <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign in to portal'}
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign in'}
               </button>
             </form>
 
             <p className="mt-5 text-center text-sm text-dark-muted">
-              No account yet?{' '}
-              <Link href="/portal/signup" className="font-semibold text-ember hover:text-ember-dark">
-                Request access
+              Not a clinician?{' '}
+              <Link href="/login" className="font-semibold text-ember hover:text-ember-dark">
+                Patient login
               </Link>
             </p>
           </div>
-
-          <p className="mt-6 text-center text-xs text-dark-muted/60">
-            Patient? <Link href="/login" className="text-ember/70 hover:text-ember">Go to patient portal</Link>
-          </p>
         </div>
       </div>
     </div>
