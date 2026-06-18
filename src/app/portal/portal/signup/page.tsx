@@ -49,15 +49,15 @@ export default function ClinicianSignupPage() {
       return
     }
 
-    const { error: profileError } = await supabase.from('profiles').insert({
+    const { error: profileError } = (await supabase.from('profiles').insert({
       id: authData.user.id,
-      role: 'clinician',
+      role: 'clinician' as const,
       full_name: fullName.trim(),
       phone: phone.trim() || null,
       specialty: specialty || null,
       facility: facility.trim() || null,
       verification_status: 'pending',
-    })
+    })) as { data: null; error: { message: string } | null }
 
     if (profileError) {
       setError('Account created but profile setup failed. Please contact support.')
@@ -238,3 +238,4 @@ export default function ClinicianSignupPage() {
     </div>
   )
 }
+
