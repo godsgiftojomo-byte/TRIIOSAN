@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* Light mode tokens */
+    --color-ink:           22 36 33;
+    --color-ember:         232 98 45;
+    --color-ember-dark:    196 72 24;
+    --color-cream:         251 246 240;
+    --color-surface:       255 255 255;
+
+    /* Urgency */
+    --color-emergency:     194 59 34;
+    --color-urgent:        214 143 36;
+    --color-routine:       52 153 102;
+  }
+
+  .dark {
+    --color-ink:           220 228 224;
+    --color-cream:         15 18 16;
+    --color-surface:       22 28 24;
+  }
+
+  html {
+    @apply antialiased scroll-smooth;
+  }
+
+  body {
+    font-family: var(--font-body, 'DM Sans', system-ui, sans-serif);
+    @apply bg-cream text-ink dark:bg-dark-bg dark:text-dark-text;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .font-display {
+    font-family: var(--font-display, 'Plus Jakarta Sans', system-ui, sans-serif);
+  }
+
+  /* Focus rings */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ember ring-offset-2 ring-offset-cream dark:ring-offset-dark-bg;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ── Pattern ─────────────────────────────────────────────────────── */
+/*
+  The pattern is the white-line-on-terracotta African textile motif
+  from the reference image. Implemented as an SVG data URI so it
+  works without any image files, loads instantly, and scales to any
+  element size without pixelation.
+*/
+@layer base {
+  :root {
+    --pattern-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Crect width='160' height='160' fill='none'/%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3C!-- Arch group top-left --%3E%3Cpath d='M10 60 Q10 30 40 30 Q70 30 70 60'/%3E%3Cpath d='M16 60 Q16 36 40 36 Q64 36 64 60'/%3E%3Cpath d='M22 60 Q22 42 40 42 Q58 42 58 60'/%3E%3C!-- Spiral top-right --%3E%3Cpath d='M120 20 Q140 20 140 40 Q140 60 120 60 Q100 60 100 40 Q100 25 115 25'/%3E%3Cpath d='M120 28 Q133 28 133 40 Q133 53 120 53 Q107 53 107 40 Q107 32 118 32'/%3E%3C!-- Zigzag middle --%3E%3Cpolyline points='5,90 20,75 35,90 50,75 65,90 80,75 95,90'/%3E%3Cpolyline points='5,98 20,83 35,98 50,83 65,98 80,83 95,98'/%3E%3C!-- Oval center --%3E%3Cellipse cx='80' cy='80' rx='16' ry='26'/%3E%3Cellipse cx='80' cy='80' rx='10' ry='20'/%3E%3C!-- T-bar bottom-left --%3E%3Cline x1='15' y1='120' x2='55' y2='120'/%3E%3Cline x1='35' y1='110' x2='35' y2='145'/%3E%3C!-- Nested arches bottom-right --%3E%3Cpath d='M100 155 Q100 125 125 125 Q150 125 150 155'/%3E%3Cpath d='M108 155 Q108 132 125 132 Q142 132 142 155'/%3E%3Cpath d='M116 155 Q116 139 125 139 Q134 139 134 155'/%3E%3C!-- Concentric curves left --%3E%3Cpath d='M5 30 Q5 10 20 10'/%3E%3Cpath d='M5 42 Q5 5 28 5'/%3E%3C!-- Dash marks scattered --%3E%3Cline x1='100' y1='105' x2='112' y2='105'/%3E%3Cline x1='118' y1='105' x2='130' y2='105'/%3E%3Cline x1='136' y1='105' x2='148' y2='105'/%3E%3Cline x1='104' y1='113' x2='116' y2='113'/%3E%3Cline x1='122' y1='113' x2='134' y2='113'/%3E%3C/g%3E%3C/svg%3E");
+  }
+}
+
+/* ── Component classes ───────────────────────────────────────────── */
+@layer components {
+
+  /* Cards */
+  .card {
+    @apply rounded-2xl border bg-white dark:bg-dark-card dark:border-dark-border p-5 shadow-card;
+    border-color: rgb(22 36 33 / 0.08);
+  }
+
+  /* Pattern overlays — applied as additional class on elements */
+  .pattern-section {
+    background-image: var(--pattern-svg);
+    background-repeat: repeat;
+  }
+  .pattern-faint {
+    background-size: 160px 160px;
+    opacity-pattern: 1;
+    /* The pattern shows through at low opacity using a pseudo-element */
+  }
+  /* Full overlay approach — works on any element */
+  .pattern-overlay {
+    position: relative;
+  }
+  .pattern-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--pattern-svg);
+    background-repeat: repeat;
+    background-size: 160px 160px;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .pattern-overlay.pattern-faint::before  { opacity: 0.06; }
+  .pattern-overlay.pattern-medium::before { opacity: 0.12; }
+  .pattern-overlay.pattern-strong::before { opacity: 0.22; }
+
+  /* Inputs */
+  .input {
+    @apply w-full rounded-xl border bg-white dark:bg-dark-surface dark:border-dark-border
+           px-4 py-3 text-sm text-ink dark:text-dark-text dark:placeholder:text-dark-muted
+           transition-colors focus:border-ember focus:outline-none focus:ring-2 focus:ring-ember/20
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    border-color: rgb(22 36 33 / 0.15);
+  }
+  .input::placeholder {
+    color: rgb(22 36 33 / 0.3);
+  }
+
+  .textarea {
+    @apply input resize-none leading-relaxed;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-ember px-5 py-3
+           font-display text-sm font-bold text-white shadow-sm
+           transition-all hover:bg-ember-dark active:scale-[0.98]
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border
+           dark:border-dark-border px-5 py-3 font-display text-sm font-bold text-ink dark:text-dark-text
+           transition-all dark:hover:bg-dark-surface active:scale-[0.98]
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    border-color: rgb(22 36 33 / 0.15);
+  }
+  .btn-secondary:hover {
+    background-color: rgb(22 36 33 / 0.05);
+  }
+  .dark .btn-secondary:hover {
+    background-color: revert;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2
+           text-sm font-medium dark:text-dark-muted
+           transition-colors dark:hover:bg-dark-surface dark:hover:text-dark-text
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    color: rgb(22 36 33 / 0.6);
+  }
+  .btn-ghost:hover {
+    background-color: rgb(22 36 33 / 0.05);
+    color: rgb(22 36 33 / 1);
+  }
+  .dark .btn-ghost {
+    color: revert;
+  }
+  .dark .btn-ghost:hover {
+    background-color: revert;
+    color: revert;
+  }
+
+  /* Message bubbles */
+  .bubble-patient {
+    @apply rounded-2xl rounded-br-sm bg-ember px-4 py-2.5 text-sm text-white shadow-sm;
+  }
+
+  .bubble-clinician {
+    @apply rounded-2xl rounded-bl-sm border dark:border-dark-border
+           bg-white dark:bg-dark-card px-4 py-2.5 text-sm text-ink dark:text-dark-text shadow-sm;
+    border-color: rgb(22 36 33 / 0.08);
+  }
+
+  /* Progress dots */
+  .step-dot {
+    @apply h-1.5 w-1.5 rounded-full dark:bg-dark-border;
+    background-color: rgb(22 36 33 / 0.15);
+  }
+  .step-dot-active {
+    @apply h-1.5 w-4 rounded-full bg-ember;
+  }
+  .step-dot-done {
+    @apply h-1.5 w-1.5 rounded-full bg-ember/40;
+  }
+}
