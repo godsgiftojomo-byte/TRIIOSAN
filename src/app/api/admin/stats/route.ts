@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
-import { validateAdminToken } from '../login/route'
+import { validateAdminToken } from '@/lib/auth/adminTokens'
 
 export async function GET() {
   const cookieStore = cookies()
