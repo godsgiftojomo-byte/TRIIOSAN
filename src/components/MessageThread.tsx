@@ -26,12 +26,10 @@ export function MessageThread({
   const bottomRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // Real-time subscription
   useEffect(() => {
     const channel = supabase
       .channel(`thread-${caseId}`)
@@ -58,16 +56,16 @@ export function MessageThread({
     setSending(true)
     setDraft('')
 
-    const { error } = await supabase.from('case_messages').insert({
+    const { error } = (await supabase.from('case_messages').insert({
       case_id: caseId,
       sender_id: currentUserId,
       sender_role: currentUserRole,
       message: text,
-    })
+    })) as { data: null; error: { message: string } | null }
 
     if (error) {
       console.error('send error:', error)
-      setDraft(text) // restore draft if send failed
+      setDraft(text)
     }
     setSending(false)
   }
@@ -93,7 +91,6 @@ export function MessageThread({
     return d.toLocaleDateString(undefined, { dateStyle: 'medium' })
   }
 
-  // Group messages by date
   const grouped: { date: string; msgs: CaseMessage[] }[] = []
   for (const msg of messages) {
     const date = formatDate(msg.created_at)
@@ -107,7 +104,6 @@ export function MessageThread({
 
   return (
     <div className="card overflow-hidden p-0 flex flex-col">
-      {/* Header */}
       <div className="border-b border-ink/8 dark:border-dark-border px-4 py-3 flex items-center justify-between">
         <h3 className="font-display text-sm font-bold text-ink dark:text-dark-text">
           {t('thread.title')}
@@ -119,7 +115,6 @@ export function MessageThread({
         )}
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1 max-h-[400px]">
         {messages.length === 0 && (
           <div className="py-8 text-center">
@@ -133,7 +128,6 @@ export function MessageThread({
 
         {grouped.map(({ date, msgs }) => (
           <div key={date}>
-            {/* Date separator */}
             <div className="flex items-center gap-3 py-3">
               <div className="flex-1 h-px bg-ink/8 dark:bg-dark-border" />
               <span className="text-xs font-semibold text-ink/30 dark:text-dark-muted">{date}</span>
@@ -149,7 +143,6 @@ export function MessageThread({
                   className={`flex ${isOwn ? 'justify-end' : 'justify-start'} ${isConsecutive ? 'mt-0.5' : 'mt-3'}`}
                 >
                   <div className={`max-w-[78%] ${isOwn ? 'items-end' : 'items-start'} flex flex-col`}>
-                    {/* Sender label — only on first in a group */}
                     {!isConsecutive && !isOwn && (
                       <span className="mb-1 pl-1 text-xs font-semibold text-ink/40 dark:text-dark-muted">
                         {msg.sender_role === 'clinician' ? 'Clinician' : 'You'}
@@ -177,7 +170,6 @@ export function MessageThread({
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
       {!disabled ? (
         <div className="border-t border-ink/8 dark:border-dark-border p-3">
           <div className="flex items-end gap-2">
