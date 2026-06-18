@@ -1,248 +1,186 @@
 'use client'
 
-import { Suspense, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 import Link from 'next/link'
-import { Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Loader2, Eye, EyeOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Wordmark } from '@/components/Wordmark'
-import { LanguageSwitcher } from '@/components/LanguageSwitcher'
-import { useLanguage } from '@/lib/i18n/LanguageContext'
-import type { UserRole, Language } from '@/lib/supabase/types'
-import { LANGUAGES } from '@/lib/i18n/translations'
+import type { Language } from '@/lib/supabase/types'
 
-function SignupForm() {
+const LANGUAGES: { code: Language; label: string }[] = [
+  { code: 'en', label: 'English' },
+  { code: 'yo', label: 'Yorùbá' },
+  { code: 'ha', label: 'Hausa' },
+  { code: 'ig', label: 'Igbo' },
+  { code: 'pcm', label: 'Pidgin' },
+]
+
+export default function PatientSignupPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const { t, lang } = useLanguage()
-  const supabase = createClient()
-
-  const initialRole = (searchParams.get('role') as UserRole) || 'patient'
-
-  const [role, setRole] = useState<UserRole>(initialRole)
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [phone, setPhone] = useState('')
-  const [specialty, setSpecialty] = useState('')
-  const [facility, setFacility] = useState('')
-  const [preferredLang, setPreferredLang] = useState<Language>(lang)
-
+  const [language, setLanguage] = useState<Language>('en')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
+    const supabase = createClient()
+    const { data: authData, error: signUpError } = await supabase.auth.signUp({ email, password })
+
+    if (signUpError || !authData.user) {
+      setError(signUpError?.message || 'Failed to create account. Please try again.')
+      setLoading(false)
+      return
+    }
+
+    const { error: profileError } = await supabase.from('profiles').insert({
+      id: authData.user.id,
+      role: 'patient',
+      full_name: fullName.trim(),
+      phone: phone.trim() || null,
+      preferred_language: language,
     })
 
-    if (authError || !authData.user) {
-      setError(authError?.message || t('auth.error.generic'))
-      setLoading(false)
-      return
-    }
-
-    const profilePayload = {
-      id: authData.user.id,
-      role,
-      full_name: fullName,
-      phone: phone || null,
-      preferred_language: preferredLang,
-      ...(role === 'clinician'
-        ? {
-            specialty: specialty || null,
-            facility: facility || null,
-            verification_status: 'pending' as const,
-          }
-        : {}),
-    }
-
-    // @ts-expect-error — supabase-ssr misresolves insert type as never[]
-    const { error: profileError } = await supabase.from('profiles').insert(profilePayload)
-
     if (profileError) {
-      setError(profileError.message)
+      setError('Account created but profile setup failed. Please contact support.')
       setLoading(false)
       return
     }
 
-    setSuccess(true)
-    setLoading(false)
-
-    setTimeout(() => {
-      router.push(`/login?role=${role}`)
-    }, 1200)
+    router.push('/dashboard')
   }
 
   return (
-    <div className="min-h-screen px-6 py-5 sm:px-10">
-      <header className="mb-8 flex items-center justify-between">
-        <Link href="/">
-          <Wordmark />
-        </Link>
-        <LanguageSwitcher />
-      </header>
+    <div className="flex min-h-screen flex-col">
+      <div className="pattern-overlay pattern-strong h-2 bg-ember" />
 
-      <main className="mx-auto max-w-md">
-        <h1 className="font-display text-2xl font-extrabold text-ink">
-          {t('auth.signup')}
-        </h1>
-
-        <div className="mt-6 flex rounded-lg border border-ink/10 bg-white p-1">
-          {(['patient', 'clinician'] as UserRole[]).map((r) => (
-            <button
-              key={r}
-              type="button"
-              onClick={() => setRole(r)}
-              className={`flex-1 rounded-md py-2 text-sm font-semibold transition-colors ${
-                role === r ? 'bg-ember text-white' : 'text-ink/60 hover:text-ink'
-              }`}
-            >
-              {r === 'patient' ? t('auth.patient') : t('auth.clinician')}
-            </button>
-          ))}
-        </div>
-
-        {success ? (
-          <div className="mt-6 rounded-lg border border-urgency-routine/20 bg-urgency-routine-bg p-4 text-sm text-urgency-routine">
-            {t('auth.signupSuccess')}
+      <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-sm">
+          <div className="mb-8 text-center">
+            <Wordmark className="justify-center" />
+            <p className="mt-2 text-sm text-ink/50 dark:text-dark-muted">Patient portal</p>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <Field label={t('auth.fullName')} required>
-              <input
-                type="text"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="input"
-              />
-            </Field>
 
-            <Field label={t('auth.email')} required>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input"
-              />
-            </Field>
+          <div className="card">
+            <h1 className="font-display text-lg font-extrabold text-ink dark:text-dark-text mb-5">
+              Create your account
+            </h1>
 
-            <Field label={t('auth.password')} required>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input"
-              />
-            </Field>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-medium text-ink/70 dark:text-dark-muted">
+                  Full name
+                </span>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="input"
+                  placeholder="Your full name"
+                />
+              </label>
 
-            <Field label={t('auth.phone')}>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="input"
-              />
-            </Field>
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-medium text-ink/70 dark:text-dark-muted">
+                  Email address
+                </span>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="input"
+                  placeholder="you@example.com"
+                />
+              </label>
 
-            {role === 'clinician' && (
-              <>
-                <Field label={t('auth.specialty')}>
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-medium text-ink/70 dark:text-dark-muted">
+                  Phone number <span className="text-ink/30">(optional)</span>
+                </span>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  disabled={loading}
+                  className="input"
+                  placeholder="+234 800 000 0000"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-medium text-ink/70 dark:text-dark-muted">
+                  Preferred language
+                </span>
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value as Language)}
+                  disabled={loading}
+                  className="input"
+                >
+                  {LANGUAGES.map((l) => (
+                    <option key={l.code} value={l.code}>{l.label}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-medium text-ink/70 dark:text-dark-muted">
+                  Password
+                </span>
+                <div className="relative">
                   <input
-                    type="text"
-                    value={specialty}
-                    onChange={(e) => setSpecialty(e.target.value)}
-                    placeholder="e.g. General Medicine, Paediatrics"
-                    className="input"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    disabled={loading}
+                    className="input pr-11"
+                    placeholder="At least 8 characters"
                   />
-                </Field>
-                <Field label={t('auth.facility')}>
-                  <input
-                    type="text"
-                    value={facility}
-                    onChange={(e) => setFacility(e.target.value)}
-                    className="input"
-                  />
-                </Field>
-              </>
-            )}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-ink/30 hover:text-ink/60"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </label>
 
-            <Field label="Preferred language">
-              <select
-                value={preferredLang}
-                onChange={(e) => setPreferredLang(e.target.value as Language)}
-                className="input"
-              >
-                {LANGUAGES.map((l) => (
-                  <option key={l.code} value={l.code}>
-                    {l.nativeLabel}
-                  </option>
-                ))}
-              </select>
-            </Field>
+              {error && (
+                <p className="rounded-xl bg-urgency-emergency-bg dark:bg-urgency-emergency-dark-bg p-3 text-sm text-urgency-emergency">
+                  {error}
+                </p>
+              )}
 
-            {error && (
-              <p className="rounded-lg bg-urgency-emergency-bg p-3 text-sm text-urgency-emergency">
-                {error}
-              </p>
-            )}
+              <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create account'}
+              </button>
+            </form>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-ember px-6 py-3 text-base font-semibold text-white shadow-card transition-colors hover:bg-ember-dark disabled:opacity-60"
-            >
-              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {t('auth.signupCta')}
-            </button>
-
-            <p className="text-center text-sm text-ink/60">
-              {t('auth.haveAccount')}{' '}
-              <Link href={`/login?role=${role}`} className="font-semibold text-ember">
-                {t('auth.loginCta')}
+            <p className="mt-5 text-center text-sm text-ink/50 dark:text-dark-muted">
+              Already have an account?{' '}
+              <Link href="/login" className="font-semibold text-ember hover:text-ember-dark">
+                Sign in
               </Link>
             </p>
-          </form>
-        )}
-      </main>
+          </div>
+        </div>
+      </div>
     </div>
-  )
-}
-
-function Field({
-  label,
-  required,
-  children,
-}: {
-  label: string
-  required?: boolean
-  children: React.ReactNode
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-ink/80">
-        {label}
-        {required && <span className="text-ember"> *</span>}
-      </span>
-      {children}
-    </label>
-  )
-}
-
-export default function SignupPage() {
-  return (
-    <Suspense>
-      <SignupForm />
-    </Suspense>
   )
 }
