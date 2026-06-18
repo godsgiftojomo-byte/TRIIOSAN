@@ -54,13 +54,15 @@ export interface CaseMessage {
   created_at: string
 }
 
+export type GenericRelationship = {
+  foreignKeyName: string
+  columns: string[]
+  isOneToOne?: boolean
+  referencedRelation: string
+  referencedColumns: string[]
+}
+
 export interface Database {
-  // Newer versions of @supabase/supabase-js (and the @supabase/ssr wrapper
-  // around it) expect a Database type to carry this metadata key. Without
-  // it, the client's internal generics fail to resolve and every query's
-  // inferred type collapses to `never` — which is what was happening here.
-  // "12" matches supabase-js's own internal default when this key is absent,
-  // so this isn't a guess: https://github.com/supabase/supabase-js/issues/1483
   __InternalSupabase: {
     PostgrestVersion: '12'
   }
@@ -70,11 +72,13 @@ export interface Database {
         Row: Profile
         Insert: Partial<Profile> & { id: string; role: UserRole; full_name: string }
         Update: Partial<Profile>
+        Relationships: GenericRelationship[]
       }
       triage_cases: {
         Row: TriageCase
         Insert: Partial<TriageCase> & { patient_id: string; primary_complaint: string }
         Update: Partial<TriageCase>
+        Relationships: GenericRelationship[]
       }
       case_messages: {
         Row: CaseMessage
@@ -85,7 +89,10 @@ export interface Database {
           message: string
         }
         Update: Partial<CaseMessage>
+        Relationships: GenericRelationship[]
       }
     }
+    Views: {}
+    Functions: {}
   }
 }
