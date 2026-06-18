@@ -41,13 +41,13 @@ export default function PatientSignupPage() {
       return
     }
 
-    const { error: profileError } = (await supabase.from('profiles').insert({
+    const { error: profileError } = await (supabase.from('profiles') as any).insert({
       id: authData.user.id,
-      role: 'patient' as const,
+      role: 'patient',
       full_name: fullName.trim(),
       phone: phone.trim() || null,
       preferred_language: language,
-    })) as { data: null; error: { message: string } | null }
+    })
 
     if (profileError) {
       setError('Account created but profile setup failed. Please contact support.')
