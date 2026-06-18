@@ -11,18 +11,9 @@ export async function GET() {
   const supabase = createClient()
 
   const [casesRes, profilesRes, messagesRes] = await Promise.all([
-    supabase.from('triage_cases').select('id, urgency, status, created_at') as unknown as Promise<{
-      data: { id: string; urgency: string | null; status: string; created_at: string }[] | null
-      error: { message: string } | null
-    }>,
-    supabase.from('profiles').select('id, role, verification_status, created_at') as unknown as Promise<{
-      data: { id: string; role: string; verification_status: string | null; created_at: string }[] | null
-      error: { message: string } | null
-    }>,
-    supabase.from('case_messages').select('id, created_at') as unknown as Promise<{
-      data: { id: string; created_at: string }[] | null
-      error: { message: string } | null
-    }>,
+    (supabase.from('triage_cases') as any).select('id, urgency, status, created_at'),
+    (supabase.from('profiles') as any).select('id, role, verification_status, created_at'),
+    (supabase.from('case_messages') as any).select('id, created_at'),
   ])
 
   const cases = casesRes.data || []
@@ -30,14 +21,14 @@ export async function GET() {
 
   const stats = {
     totalCases: cases.length,
-    openCases: cases.filter((c) => c.status === 'open').length,
-    closedCases: cases.filter((c) => c.status === 'closed').length,
-    emergency: cases.filter((c) => c.urgency === 'emergency').length,
-    urgent: cases.filter((c) => c.urgency === 'urgent').length,
-    routine: cases.filter((c) => c.urgency === 'routine').length,
-    totalPatients: profiles.filter((p) => p.role === 'patient').length,
-    totalClinicians: profiles.filter((p) => p.role === 'clinician').length,
-    pendingClinicians: profiles.filter((p) => p.role === 'clinician' && p.verification_status === 'pending').length,
+    openCases: cases.filter((c: any) => c.status === 'open').length,
+    closedCases: cases.filter((c: any) => c.status === 'closed').length,
+    emergency: cases.filter((c: any) => c.urgency === 'emergency').length,
+    urgent: cases.filter((c: any) => c.urgency === 'urgent').length,
+    routine: cases.filter((c: any) => c.urgency === 'routine').length,
+    totalPatients: profiles.filter((p: any) => p.role === 'patient').length,
+    totalClinicians: profiles.filter((p: any) => p.role === 'clinician').length,
+    pendingClinicians: profiles.filter((p: any) => p.role === 'clinician' && p.verification_status === 'pending').length,
     totalMessages: messagesRes.data?.length || 0,
     recentActivity: getLast14Days(cases),
   }
