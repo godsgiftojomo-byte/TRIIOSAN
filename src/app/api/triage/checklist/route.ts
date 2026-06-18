@@ -104,8 +104,8 @@ const BASE_QUESTIONS: Record<Language, string[]> = {
     'Ṣé o ní àìsàn tó mọ̀ — bí àtọ̀gbẹ, ẹ̀jẹ̀ rírọ gíga, àárọ̀, HIV, tàbí àìsàn àìsàn mìíràn?',
   ],
   ha: [
-    'Tsawon lokaci nawa kake da wannan alamar ko korafi? (misali: 'yan awanni, kwana 3, makonni 2)',
-    'A kan ma'aunin 1 zuwa 10, yaya tsananin ciwo ko rashin jin daɗi yake yanzu? (1 = mai laushi, 10 = mafi muni)',
+    "Tsawon lokaci nawa kake da wannan alamar ko korafi? (misali: 'yan awanni, kwana 3, makonni 2)",
+    "A kan ma'aunin 1 zuwa 10, yaya tsananin ciwo ko rashin jin daɗi yake yanzu? (1 = mai laushi, 10 = mafi muni)",
     'Matsalar na ta yin muni, ta inganta, ko ta kasance iri ɗaya?',
     'Shin kun taɓa samun wannan matsala dā? Idan haka ne, yaushe kuma me ya faru?',
     'Shin kuna shan wani magani, magunguna na ganye, ko ƙari? Idan haka ne, don Allah jera su.',
@@ -156,7 +156,7 @@ const FALLBACK_QUESTIONS: Record<Language, string[]> = {
     'Mene ne yake sa ya yi muni? (misali: motsi, cin abinci, kwanciya, damuwa)',
     'Mene ne ke ba ku sauƙi, ko da ɗan sauƙi? (misali: huta, wata matsayi, magani)',
     'Kuna da zazzabi, sanyi, ko ƙararraki da daddare?',
-    'Kun lura da wasu canje-canje a cikin sha'awar abincin ku, nauyi, fitsari, ko motsin hanji kwanan nan?',
+    "Kun lura da wasu canje-canje a cikin sha'awar abincin ku, nauyi, fitsari, ko motsin hanji kwanan nan?",
   ],
   ig: [
     'Ebe ole kwa n\'ahụ gị i nọ na-anwụnye? Ị nwere ike igosi ma ọ bụ kọwaa ebe ahụ?',
