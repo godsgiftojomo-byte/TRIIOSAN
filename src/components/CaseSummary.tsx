@@ -70,13 +70,19 @@ export function CaseSummary({
         </div>
       )}
 
-      {/* AI assessment */}
-      {triageCase.ai_assessment && (
+           {triageCase.checklist_qa.length > 0 && (
         <div className="card">
-          <h3 className="mb-1.5 font-display text-xs font-bold uppercase tracking-wide text-ink/40">
-            {t('thread.aiAssessment')}
+          <h3 className="mb-2 font-display text-xs font-bold uppercase tracking-wide text-ink/40">
+            {t('thread.checklist')}
           </h3>
-          <p className="text-sm leading-relaxed text-ink/80">{triageCase.ai_assessment}</p>
+          <dl className="space-y-2">
+            {triageCase.checklist_qa.map((item, i) => (
+              <div key={i}>
+                <dt className="text-xs font-medium text-ink/50">{item.question}</dt>
+                <dd className="text-sm text-ink/80">{item.answer || '—'}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       )}
 
