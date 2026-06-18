@@ -29,11 +29,11 @@ export default function PatientLoginPage() {
       return
     }
 
-    const { data: profile } = await supabase
+    const { data: profile } = (await supabase
       .from('profiles')
       .select('role')
       .eq('id', data.user.id)
-      .single()
+      .single()) as { data: { role: 'patient' | 'clinician' } | null }
 
     if (profile?.role === 'clinician') {
       router.push('/portal')
