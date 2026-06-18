@@ -1,112 +1,181 @@
 import { NextResponse } from 'next/server'
-import { createUntypedClient } from '@/lib/supabase/untyped'
+import { createClient } from '@/lib/supabase/server'
 import { getAnthropicClient, TRIAGE_MODEL } from '@/lib/anthropic/client'
 import { buildAssessmentPrompt, parseModelJson } from '@/lib/anthropic/prompts'
-import { checkRedFlags, applyRedFlagOverride } from '@/lib/triage/redFlags'
-import type { ChecklistItem, Language, Urgency } from '@/lib/supabase/types'
+import { checkRedFlags } from '@/lib/triage/redFlags'
+import { evaluateProtocols } from '@/lib/triage/protocols'
+import type { Language, Urgency, ChecklistItem } from '@/lib/supabase/types'
 
-interface AssessmentResponse {
-  urgency: Urgency
-  assessment: string
-  recommended_tests: string[]
+interface AssessmentBody {
+  complaint: string
+  allAnswers: ChecklistItem[]
+  language: Language
 }
 
-const VALID_URGENCY: Urgency[] = ['emergency', 'urgent', 'routine']
+interface ModelAssessment {
+  urgency: Urgency
+  assessment: string
+  assessment_detail: string
+  recommended_tests: string[]
+  immediate_action: string
+}
+
+const URGENCY_RANK: Record<Urgency, number> = { emergency: 2, urgent: 1, routine: 0 }
 
 export async function POST(request: Request) {
-  const supabase = createUntypedClient()
+  const supabase = createClient()
   const { data: authData, error: authError } = await supabase.auth.getUser()
+
   if (authError || !authData.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const body = await request.json()
-  const complaint: string = (body?.complaint || '').trim()
-  const checklist: ChecklistItem[] = Array.isArray(body?.checklist) ? body.checklist : []
-  const language: Language = body?.language || 'en'
+  const body: AssessmentBody = await request.json()
+  const { complaint, allAnswers = [], language = 'en' } = body
 
-  if (!complaint) {
+  if (!complaint?.trim()) {
     return NextResponse.json({ error: 'complaint is required' }, { status: 400 })
   }
 
-  const combinedText = [complaint, ...checklist.map((c) => c.answer || '')].join(' ')
-  const redFlags = checkRedFlags(combinedText)
+  // Full symptom text for rule-based layers
+  const fullText = [
+    complaint,
+    ...allAnswers.map((qa) => `${qa.question} ${qa.answer}`),
+  ].join(' ')
 
-  let aiResult: AssessmentResponse | null = null
+  // Rule-based layers always run — independent of AI
+  const redFlagUrgency = checkRedFlags(fullText)
+  const matchedProtocol = evaluateProtocols(fullText)
+  const protocolUrgency = matchedProtocol?.urgency ?? null
+
+  // AI assessment
+  let aiResult: ModelAssessment | null = null
+  let aiError: string | null = null
 
   try {
     const anthropic = getAnthropicClient()
+
+    if (!process.env.ANTHROPIC_API_KEY) {
+      throw new Error('ANTHROPIC_API_KEY environment variable is not set')
+    }
+
     const message = await anthropic.messages.create({
       model: TRIAGE_MODEL,
-      max_tokens: 1000,
+      max_tokens: 1500,
       messages: [
-        { role: 'user', content: buildAssessmentPrompt(complaint, checklist, language) },
+        {
+          role: 'user',
+          content: buildAssessmentPrompt(complaint, allAnswers, language),
+        },
       ],
     })
 
     const textBlock = message.content.find((b) => b.type === 'text')
     if (!textBlock || textBlock.type !== 'text') {
-      throw new Error('No text response from model')
+      throw new Error('No text block in model response')
     }
 
-    const parsed = parseModelJson<AssessmentResponse>(textBlock.text)
+    const parsed = parseModelJson<ModelAssessment>(textBlock.text)
 
-    if (!VALID_URGENCY.includes(parsed.urgency)) {
-      throw new Error(`Invalid urgency from model: ${parsed.urgency}`)
+    if (!parsed.urgency || !['emergency', 'urgent', 'routine'].includes(parsed.urgency)) {
+      throw new Error(`Invalid urgency value from model: ${parsed.urgency}`)
+    }
+    if (!parsed.assessment) {
+      throw new Error('Model response missing assessment field')
     }
 
-    aiResult = {
-      urgency: parsed.urgency,
-      assessment: parsed.assessment || '',
-      recommended_tests: Array.isArray(parsed.recommended_tests)
-        ? parsed.recommended_tests.slice(0, 4)
-        : [],
-    }
-  } catch (err) {
-    console.error('triage assessment error:', err)
-    aiResult = {
-      urgency: 'routine',
-      assessment: FALLBACK_ASSESSMENT[language] || FALLBACK_ASSESSMENT.en,
-      recommended_tests: [],
-    }
+    aiResult = parsed
+  } catch (err: unknown) {
+    aiError = err instanceof Error ? err.message : String(err)
+    // Visible in Vercel function logs — not swallowed silently
+    console.error('[triage/assess] AI error:', aiError)
   }
 
-  const { urgency, source } = applyRedFlagOverride(aiResult.urgency, redFlags)
+  // Determine final urgency — escalate-only
+  let finalUrgency: Urgency = aiResult?.urgency ?? 'urgent'
+  let urgencySource: 'ai' | 'red-flag' | 'protocol' | 'fallback' =
+    aiResult ? 'ai' : 'fallback'
 
-  const { data: caseRow, error: insertError } = await supabase
+  if (redFlagUrgency && URGENCY_RANK[redFlagUrgency] > URGENCY_RANK[finalUrgency]) {
+    finalUrgency = redFlagUrgency
+    urgencySource = 'red-flag'
+  }
+  if (protocolUrgency && URGENCY_RANK[protocolUrgency] > URGENCY_RANK[finalUrgency]) {
+    finalUrgency = protocolUrgency
+    urgencySource = 'protocol'
+  }
+
+  const assessment = aiResult?.assessment ?? FALLBACK_ASSESSMENT[language] ?? FALLBACK_ASSESSMENT.en
+  const assessmentDetail = aiResult?.assessment_detail ?? FALLBACK_DETAIL[language] ?? FALLBACK_DETAIL.en
+  const immediateAction = matchedProtocol?.immediateAction ?? aiResult?.immediate_action ?? FALLBACK_ACTION[language] ?? FALLBACK_ACTION.en
+
+  const aiTests = aiResult?.recommended_tests ?? []
+  const protocolTests = matchedProtocol?.recommendedTests ?? []
+  const allTests = [...new Set([...protocolTests, ...aiTests])]
+
+  // Save to Supabase — using correct v2 column names
+  const { data: savedCase, error: saveError } = await supabase
     .from('triage_cases')
     .insert({
       patient_id: authData.user.id,
       primary_complaint: complaint,
       complaint_language: language,
-      checklist,
-      ai_assessment: aiResult.assessment,
-      urgency,
-      urgency_source: source,
-      recommended_tests: aiResult.recommended_tests,
+      checklist_qa: allAnswers,
+      urgency: finalUrgency,
+      urgency_source: urgencySource,
+      ai_assessment: assessment,
+      ai_assessment_detail: assessmentDetail,
+      recommended_tests: allTests,
+      immediate_action: immediateAction,
+      matched_protocol_id: matchedProtocol?.id ?? null,
       status: 'open',
     })
     .select()
     .single()
 
-  if (insertError || !caseRow) {
-    console.error('case insert error:', insertError)
-    return NextResponse.json({ error: 'Failed to save case' }, { status: 500 })
+  if (saveError || !savedCase) {
+    console.error('[triage/assess] Supabase save error:', JSON.stringify(saveError))
+    return NextResponse.json(
+      { error: 'Failed to save triage case. Please try again.', detail: saveError?.message },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({
-    case: caseRow,
-    urgency,
-    urgencySource: source,
-    assessment: aiResult.assessment,
-    recommendedTests: aiResult.recommended_tests,
+    caseId: savedCase.id,
+    urgency: finalUrgency,
+    urgencySource,
+    assessment,
+    assessmentDetail,
+    recommendedTests: allTests,
+    immediateAction,
+    protocolName: matchedProtocol?.name ?? null,
+    clinicianNotes: matchedProtocol?.clinicianNotes ?? null,
+    aiUnavailable: !!aiError,
+    aiError: process.env.NODE_ENV === 'development' ? aiError : undefined,
   })
 }
 
 const FALLBACK_ASSESSMENT: Record<Language, string> = {
-  en: "We've recorded what you've shared. A clinician will review your case shortly — you can continue the conversation below.",
-  yo: 'A ti gba ohun tí o sọ. Dókítà yóò wo ọ̀rọ̀ rẹ láìpẹ́ — o lè tẹ̀síwájú ìfọ̀rọ̀wérọ̀ ní ìsàlẹ̀.',
-  ha: 'Mun rubuta abin da ka faɗa. Likita zai duba lamarinku ba da daɗewa — za ka iya cigaba da tattaunawa a ƙasa.',
-  ig: 'Anyị edebanyela ihe ị kọwara. Dọkịta ga-elele okwu gị n\'oge na-adịghị anya — ị nwere ike ịga n\'ihu na mkparịta ụka n\'okpuru.',
-  pcm: 'We don record wetin you talk. Clinician go review your case soon — you fit continue the gist for down.',
+  en: "We've reviewed the symptoms you described and recorded your case. A clinician will review your information and respond to you shortly.",
+  yo: "A ti ṣàgbéyẹ̀wò àwọn àmì àìsàn tí o ṣàpèjúwe àti ìgbàsilẹ̀ ọ̀ràn rẹ. Dókítà kan yóò ṣàgbéyẹ̀wò àlàyé rẹ tí yóò sì dáhùn sí rẹ láìpẹ́.",
+  ha: "Mun duba alamomin da kuka bayyana kuma mun rubuta kayanku. Likita zai duba bayananku kuma ya amsa muku nan ba da jimawa ba.",
+  ig: "Anyị lelee ihe ọ bụla i kọwaara anyị ma dere okwu gị. Dọkịta ga-elele ozi gị ma zaghachi gị n'oge na-adịghị anya.",
+  pcm: "We don check the symptoms wey you describe and we don record your case. One dokita go look your information and reply you soon.",
+}
+
+const FALLBACK_DETAIL: Record<Language, string> = {
+  en: "Your case has been flagged for clinician review. The urgency level shown reflects your symptoms and our clinical guidelines. Please respond to any messages from your assigned clinician as soon as you can.",
+  yo: "A ti fi àmì sí ọ̀ràn rẹ fún ìgbéyẹ̀wò dókítà. Ìwọ̀n pàtàkì tí a fihàn ṣàfihàn àmì àìsàn rẹ àti àwọn ìlànà ìtọ́jú wa.",
+  ha: "An yiwa kayanku alamar don duba daga likita. Matakan gaggawa da aka nuna yana nuna alamominka da kuma jagororin asibiti namu.",
+  ig: "Anyị akara okwu gị maka nlele dọkịta. Ọkwa nsogbu egosiri ọzọ gosipụta ihe ọ bụla i dere na ụkpụrụ ọgwụ anyị.",
+  pcm: "We don flag your case for dokita to check. The urgency level wey show dey reflect your symptoms and our medical guidelines.",
+}
+
+const FALLBACK_ACTION: Record<Language, string> = {
+  en: "Rest and stay hydrated while you wait for a clinician to respond. If your symptoms worsen significantly, go to the nearest hospital immediately.",
+  yo: "Sinmi kí o sì mu omi tó to nígbà tí o ń dúró fún dókítà. Bí àwọn àmì àìsàn rẹ bá burú sí i lọ́pọ̀lọpọ̀, lọ sí ilé-ìwòsàn tó wà nítòsí.",
+  ha: "Huta kuma sha ruwa yayin da kake jiran likita ya amsa. Idan alamominka sun yi muni sosai, je asibiti mafi kusa nan da nan.",
+  ig: "Zuo ike ma mee ka mmiri dị n'ahụ gị ka dọkịta na-azaghachi. Ọ bụrụ na ihe ọ bụla dị gị njọ karịa, gaa ụlọ ọgwụ dị nso ozugbo.",
+  pcm: "Rest and drink water while you dey wait for dokita to reply. If your symptoms dey get worse bad bad, go the nearest hospital immediately.",
 }
