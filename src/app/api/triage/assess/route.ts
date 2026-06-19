@@ -16,6 +16,7 @@ interface ModelAssessment {
   urgency: Urgency
   assessment: string
   assessment_detail: string
+  clinician_summary: string   // clinician-only — saved to DB, never sent to patient UI
   recommended_tests: string[]
   immediate_action: string
 }
@@ -94,11 +95,13 @@ export async function POST(request: Request) {
   const assessmentDetail = aiResult?.assessment_detail ?? FALLBACK_DETAIL[language] ?? FALLBACK_DETAIL.en
   const immediateAction = matchedProtocol?.immediateAction ?? aiResult?.immediate_action ?? FALLBACK_ACTION[language] ?? FALLBACK_ACTION.en
 
+  // Tests: AI-only tests shown to patient (relevant, complaint-specific).
+  // Protocol tests + combined list saved internally for clinician review.
   const aiTests = aiResult?.recommended_tests ?? []
   const protocolTests = matchedProtocol?.recommendedTests ?? []
-  const allTests = [...new Set([...protocolTests, ...aiTests])]
+  const allTestsForClinician = [...new Set([...protocolTests, ...aiTests])]
 
-  // Save to Supabase
+  // Save to Supabase — store full data including protocol name for clinician
   const { data: savedCase, error: saveError } = await supabase
     .from('triage_cases')
     .insert({
@@ -110,7 +113,8 @@ export async function POST(request: Request) {
       urgency_source: urgencySource,
       ai_assessment: assessment,
       ai_assessment_detail: assessmentDetail,
-      recommended_tests: allTests,
+      ai_clinician_summary: aiResult?.clinician_summary ?? null,  // clinician-only
+      recommended_tests: allTestsForClinician,
       immediate_action: immediateAction,
       matched_protocol_id: matchedProtocol?.id ?? null,
       status: 'open',
@@ -126,16 +130,19 @@ export async function POST(request: Request) {
     )
   }
 
+  // Patient-facing response — NO diagnosis name, NO protocol-derived test list.
+  // The clinician sees everything via the case record in Supabase.
   return NextResponse.json({
     caseId: savedCase.id,
     urgency: finalUrgency,
     urgencySource,
     assessment,
     assessmentDetail,
-    recommendedTests: allTests,
+    // Only show AI-generated tests to patient, not the protocol's full list
+    recommendedTests: aiTests.slice(0, 4),
     immediateAction,
-    protocolName: matchedProtocol?.name ?? null,
-    clinicianNotes: matchedProtocol?.clinicianNotes ?? null,
+    // protocolName intentionally omitted — clinician-only
+    // clinicianNotes intentionally omitted — clinician-only
     aiUnavailable: !!aiError,
     aiError: process.env.NODE_ENV === 'development' ? aiError : undefined,
   })
