@@ -75,19 +75,13 @@
   }
 
   /* Pattern overlays — applied as additional class on elements */
+  /* Both pattern-overlay and pattern-section use the ::before pseudo-element
+     approach so the pattern sits behind content and respects opacity at all times.
+     pattern-section is the simple shorthand; pattern-overlay adds position:relative. */
   .pattern-section {
-    background-image: var(--pattern-svg);
-    background-repeat: repeat;
-  }
-  .pattern-faint {
-    background-size: 160px 160px;
-    opacity-pattern: 1;
-    /* The pattern shows through at low opacity using a pseudo-element */
-  }
-  /* Full overlay approach — works on any element */
-  .pattern-overlay {
     position: relative;
   }
+  .pattern-section::before,
   .pattern-overlay::before {
     content: '';
     position: absolute;
@@ -97,10 +91,24 @@
     background-size: 160px 160px;
     pointer-events: none;
     border-radius: inherit;
+    opacity: 0.06;
   }
+  .pattern-section.pattern-faint::before,
   .pattern-overlay.pattern-faint::before  { opacity: 0.06; }
+  .pattern-section.pattern-medium::before,
   .pattern-overlay.pattern-medium::before { opacity: 0.12; }
+  .pattern-section.pattern-strong::before,
   .pattern-overlay.pattern-strong::before { opacity: 0.22; }
+
+  /* In dark mode, lower opacity so the white pattern is subtle, not glaring */
+  .dark .pattern-section::before,
+  .dark .pattern-overlay::before { opacity: 0.04; }
+  .dark .pattern-section.pattern-faint::before,
+  .dark .pattern-overlay.pattern-faint::before  { opacity: 0.04; }
+  .dark .pattern-section.pattern-medium::before,
+  .dark .pattern-overlay.pattern-medium::before { opacity: 0.07; }
+  .dark .pattern-section.pattern-strong::before,
+  .dark .pattern-overlay.pattern-strong::before { opacity: 0.12; }
 
   /* Inputs */
   .input {
