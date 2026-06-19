@@ -25,7 +25,6 @@ interface AssessResult {
   assessmentDetail: string
   recommendedTests: string[]
   immediateAction: string
-  protocolName: string | null
   aiUnavailable: boolean
 }
 
@@ -191,7 +190,6 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
         assessmentDetail: data.assessmentDetail,
         recommendedTests: data.recommendedTests,
         immediateAction: data.immediateAction,
-        protocolName: data.protocolName,
         aiUnavailable: data.aiUnavailable,
       })
       setStep('result')
@@ -226,7 +224,7 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
   if (step === 'complaint' || step === 'loading-base') {
     return (
       <div className="space-y-4">
-        <div className="card pattern-section pattern-faint">
+        <div className="card pattern-overlay pattern-faint">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-ember/10">
               <Activity className="h-5 w-5 text-ember" />
@@ -454,7 +452,7 @@ function ResultView({
   return (
     <div className="space-y-4">
       {/* Main urgency card — the signature element */}
-      <div className={`rounded-2xl border-2 ${config.border} ${config.bg} ${config.darkBg} pattern-section pattern-medium overflow-hidden`}>
+      <div className={`rounded-2xl border-2 ${config.border} ${config.bg} ${config.darkBg} pattern-overlay pattern-medium overflow-hidden`}>
         <div className="p-5">
           <p className="font-display text-xs font-bold uppercase tracking-widest text-ink/40 dark:text-dark-muted mb-3">
             {t('case.resultTitle')}
@@ -467,11 +465,6 @@ function ResultView({
               <h2 className={`font-display text-3xl font-extrabold ${config.color}`}>
                 {t(`case.urgency.${result.urgency}`)}
               </h2>
-              {result.protocolName && (
-                <p className="mt-0.5 text-xs font-semibold text-ink/50 dark:text-dark-muted">
-                  {result.protocolName}
-                </p>
-              )}
             </div>
           </div>
         </div>
