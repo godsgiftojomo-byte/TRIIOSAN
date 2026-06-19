@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { getGeminiModel } from '@/lib/anthropic/client'
+import { generateWithGemini } from '@/lib/anthropic/client'
 import { buildAssessmentPrompt, parseModelJson } from '@/lib/anthropic/prompts'
 import { checkRedFlags } from '@/lib/triage/redFlags'
 import { evaluateProtocols } from '@/lib/triage/protocols'
@@ -54,11 +54,9 @@ export async function POST(request: Request) {
   let aiError: string | null = null
 
   try {
-    const model = getGeminiModel()
     const prompt = buildAssessmentPrompt(complaint, allAnswers, language)
-
-    const result = await model.generateContent(prompt)
-    const text = result.response.text()
+    // NEW SDK: generateWithGemini() — replaces old getGeminiModel().generateContent()
+    const text = await generateWithGemini(prompt)
 
     if (!text) throw new Error('Empty response from Gemini')
 
