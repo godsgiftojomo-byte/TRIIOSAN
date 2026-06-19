@@ -91,7 +91,8 @@ export async function POST(request: Request) {
 
   const assessment = aiResult?.assessment ?? FALLBACK_ASSESSMENT[language] ?? FALLBACK_ASSESSMENT.en
   const assessmentDetail = aiResult?.assessment_detail ?? FALLBACK_DETAIL[language] ?? FALLBACK_DETAIL.en
-  const immediateAction = matchedProtocol?.immediateAction ?? aiResult?.immediate_action ?? FALLBACK_ACTION[language] ?? FALLBACK_ACTION.en
+  // AI-generated action is complaint-specific — always prefer it over protocol hardcoded string
+  const immediateAction = aiResult?.immediate_action ?? matchedProtocol?.immediateAction ?? FALLBACK_ACTION[language] ?? FALLBACK_ACTION.en
 
   // Tests: AI-only tests shown to patient (relevant, complaint-specific).
   // Protocol tests + combined list saved internally for clinician review.
