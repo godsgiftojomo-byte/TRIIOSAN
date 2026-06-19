@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { getGeminiModel } from '@/lib/anthropic/client'
+import { generateWithGemini } from '@/lib/anthropic/client'
 import { buildFollowUpPrompt, parseModelJson } from '@/lib/anthropic/prompts'
 import type { Language, ChecklistItem } from '@/lib/supabase/types'
 
@@ -44,13 +44,9 @@ export async function POST(request: Request) {
   }
 
   try {
-    const model = getGeminiModel()
     const prompt = buildFollowUpPrompt(complaint, baseAnswers, language)
-
-    const result = await model.generateContent(prompt)
-    const text = result.response.text()
-
-    if (!text) throw new Error('Empty response from Gemini')
+    // NEW SDK: generateWithGemini() — replaces old model.generateContent()
+    const text = await generateWithGemini(prompt)
 
     const parsed = parseModelJson<{ questions: string[] }>(text)
     const questions = Array.isArray(parsed.questions)
@@ -72,8 +68,6 @@ export async function POST(request: Request) {
 
 /**
  * WHO/FMOH-grounded base questions — universal clinical intake axes.
- * Sources: WHO IMCI guidelines, Nigerian FMOH Primary Healthcare
- * triage intake protocols, standard nursing triage intake standards.
  */
 const BASE_QUESTIONS: Record<Language, string[]> = {
   en: [
@@ -93,7 +87,7 @@ const BASE_QUESTIONS: Record<Language, string[]> = {
     'Ṣé o ní àìsàn tó mọ̀ — bí àtọ̀gbẹ, ẹ̀jẹ̀ rírọ gíga, àárọ̀, HIV, tàbí àìsàn àìsàn mìíràn?',
   ],
   ha: [
-    'Tsawon lokaci nawa kake da wannan alamar ko korafi? (misali: \'yan awanni, kwana 3, makonni 2)',
+    "Tsawon lokaci nawa kake da wannan alamar ko korafi? (misali: 'yan awanni, kwana 3, makonni 2)",
     "A kan ma'aunin 1 zuwa 10, yaya tsananin ciwo ko rashin jin daɗi yake yanzu? (1 = mai laushi, 10 = mafi muni)",
     'Matsalar na ta yin muni, ta inganta, ko ta kasance iri ɗaya?',
     'Shin kun taɓa samun wannan matsala dā? Idan haka ne, yaushe kuma me ya faru?',
