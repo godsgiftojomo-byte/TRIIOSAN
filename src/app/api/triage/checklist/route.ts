@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { getAnthropicClient, TRIAGE_MODEL } from '@/lib/anthropic/client'
-import { buildChecklistPrompt, buildFollowUpPrompt, parseModelJson } from '@/lib/anthropic/prompts'
+import { getGeminiModel } from '@/lib/anthropic/client'
+import { buildFollowUpPrompt, parseModelJson } from '@/lib/anthropic/prompts'
 import type { Language, ChecklistItem } from '@/lib/supabase/types'
 
 /**
- * Stage 1: Generate WHO/FMOH base questions (fixed clinical axes).
- * Stage 2: Generate AI follow-up questions based on complaint + base answers.
+ * Stage 1: Return WHO/FMOH base questions (no AI call needed).
+ * Stage 2: Generate AI follow-up questions via Gemini.
  *
  * Both stages return { questions: string[] }.
  */
@@ -27,18 +27,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'complaint is required' }, { status: 400 })
   }
 
-  // ── Stage 1: WHO/FMOH base questions ─────────────────────────────
+  // ── Stage 1: WHO/FMOH base questions (fixed, no AI needed) ───────
   if (stage === 1) {
-    // These are grounded in WHO IMCI + Nigerian FMOH Primary Healthcare
-    // triage intake standards. They cover the universal clinical axes
-    // that matter for any presenting complaint.
     const baseQuestions = BASE_QUESTIONS[language] || BASE_QUESTIONS.en
     return NextResponse.json({ questions: baseQuestions, stage: 1 })
   }
 
-  // ── Stage 2: AI-generated complaint-specific follow-ups ───────────
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error('[checklist/stage2] ANTHROPIC_API_KEY not set')
+  // ── Stage 2: Gemini-generated complaint-specific follow-ups ───────
+  if (!process.env.GEMINI_API_KEY) {
+    console.error('[checklist/stage2] GEMINI_API_KEY not set')
     return NextResponse.json({
       questions: FALLBACK_QUESTIONS[language] || FALLBACK_QUESTIONS.en,
       stage: 2,
@@ -47,22 +44,15 @@ export async function POST(request: Request) {
   }
 
   try {
-    const anthropic = getAnthropicClient()
-    const message = await anthropic.messages.create({
-      model: TRIAGE_MODEL,
-      max_tokens: 800,
-      messages: [
-        {
-          role: 'user',
-          content: buildFollowUpPrompt(complaint, baseAnswers, language),
-        },
-      ],
-    })
+    const model = getGeminiModel()
+    const prompt = buildFollowUpPrompt(complaint, baseAnswers, language)
 
-    const textBlock = message.content.find((b) => b.type === 'text')
-    if (!textBlock || textBlock.type !== 'text') throw new Error('No text block')
+    const result = await model.generateContent(prompt)
+    const text = result.response.text()
 
-    const parsed = parseModelJson<{ questions: string[] }>(textBlock.text)
+    if (!text) throw new Error('Empty response from Gemini')
+
+    const parsed = parseModelJson<{ questions: string[] }>(text)
     const questions = Array.isArray(parsed.questions)
       ? parsed.questions.filter((q): q is string => typeof q === 'string').slice(0, 6)
       : []
@@ -71,7 +61,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ questions, stage: 2 })
   } catch (err) {
-    console.error('[checklist/stage2] AI error:', err instanceof Error ? err.message : err)
+    console.error('[checklist/stage2] Gemini error:', err instanceof Error ? err.message : err)
     return NextResponse.json({
       questions: FALLBACK_QUESTIONS[language] || FALLBACK_QUESTIONS.en,
       stage: 2,
@@ -84,7 +74,6 @@ export async function POST(request: Request) {
  * WHO/FMOH-grounded base questions — universal clinical intake axes.
  * Sources: WHO IMCI guidelines, Nigerian FMOH Primary Healthcare
  * triage intake protocols, standard nursing triage intake standards.
- * These 6 questions apply regardless of presenting complaint.
  */
 const BASE_QUESTIONS: Record<Language, string[]> = {
   en: [
@@ -104,7 +93,7 @@ const BASE_QUESTIONS: Record<Language, string[]> = {
     'Ṣé o ní àìsàn tó mọ̀ — bí àtọ̀gbẹ, ẹ̀jẹ̀ rírọ gíga, àárọ̀, HIV, tàbí àìsàn àìsàn mìíràn?',
   ],
   ha: [
-    "Tsawon lokaci nawa kake da wannan alamar ko korafi? (misali: 'yan awanni, kwana 3, makonni 2)",
+    'Tsawon lokaci nawa kake da wannan alamar ko korafi? (misali: \'yan awanni, kwana 3, makonni 2)',
     "A kan ma'aunin 1 zuwa 10, yaya tsananin ciwo ko rashin jin daɗi yake yanzu? (1 = mai laushi, 10 = mafi muni)",
     'Matsalar na ta yin muni, ta inganta, ko ta kasance iri ɗaya?',
     'Shin kun taɓa samun wannan matsala dā? Idan haka ne, yaushe kuma me ya faru?',
@@ -113,10 +102,10 @@ const BASE_QUESTIONS: Record<Language, string[]> = {
   ],
   ig: [
     'Ọ dị afọ ole ka i nwere ihe a ọ bụ oke ya? (dịka: awa ole, ụbọchị 3, izu 2)',
-    'N\'ọnụ ọgụgụ 1 ruo 10, olee otú oke ọnọdụ ọjọọ ahụ bụ ugbu a? (1 = dị mfe, 10 = njọ karia)',
+    "N'ọnụ ọgụgụ 1 ruo 10, olee otú oke ọnọdụ ọjọọ ahụ bụ ugbu a? (1 = dị mfe, 10 = njọ karia)",
     'Nsogbu ahụ na-abawanye, na-eji mma, ma ọ bụ na-adịgide otu aka?',
-    'I nwere nsogbu a ọzọ n\'oge gara aga? Ọ bụrụ n\'eyo, mgbe ole na-ole na gịnị mere?',
-    'Ị na-eji ọgwụ ọ bụla, ọgwụ osisi, ma ọ bụ mgbakwunye ugbu a? Ọ bụrụ n\'eyo, biko depụta ha.',
+    "I nwere nsogbu a ọzọ n'oge gara aga? Ọ bụrụ n'eyo, mgbe ole na-ole na gịnị mere?",
+    "Ị na-eji ọgwụ ọ bụla, ọgwụ osisi, ma ọ bụ mgbakwunye ugbu a? Ọ bụrụ n'eyo, biko depụta ha.",
     'I nwere ọrịa ọ bụla a maara — dịka ọ bụ shuga, ọbara ọbara dị elu, ọrịa ume, HIV, ma ọ bụ ọrịa ogologo oge?',
   ],
   pcm: [
@@ -130,8 +119,7 @@ const BASE_QUESTIONS: Record<Language, string[]> = {
 }
 
 /**
- * Fallback follow-up questions used when the AI is unavailable.
- * These are common differential-diagnosis questions that apply broadly.
+ * Fallback follow-up questions when Gemini is unavailable.
  */
 const FALLBACK_QUESTIONS: Record<Language, string[]> = {
   en: [
@@ -148,7 +136,7 @@ const FALLBACK_QUESTIONS: Record<Language, string[]> = {
     'Kí ni ó ń jẹ́ kí ó burú sí i?',
     'Kí ni ó ń fúnni ní ìṣọ̀fọ̀?',
     'Njẹ́ o ní ìbà, ìrọ̀rọ̀ otutu, tàbí ìgbà?',
-    'Ṣé o ṣàkíyèsí ìyípadà nínú jíjẹun, ìwọn ara, ìtọ̀, tàbí àgbẹ̀ rẹ laipẹ?',
+    'Ṣé o ṣàkíyèsí ìyípadà nínú jíjẹun, ìwon ara, ìtọ̀, tàbí àgbẹ̀ rẹ laipẹ?',
   ],
   ha: [
     'A ina daidai cikin jikinka kake jin wannan? Kuna iya nuna ko bayyana wurin?',
@@ -159,12 +147,12 @@ const FALLBACK_QUESTIONS: Record<Language, string[]> = {
     "Kun lura da wasu canje-canje a cikin sha'awar abincin ku, nauyi, fitsari, ko motsin hanji kwanan nan?",
   ],
   ig: [
-    'Ebe ole kwa n\'ahụ gị i nọ na-anwụnye? Ị nwere ike igosi ma ọ bụ kọwaa ebe ahụ?',
+    "Ebe ole kwa n'ahụ gị i nọ na-anwụnye? Ị nwere ike igosi ma ọ bụ kọwaa ebe ahụ?",
     'Ọ bụ ezie na ọnọdụ ọjọọ ahụ na-agbasa na akụkụ ọzọ nke ahụ gị?',
     'Gịnị na-eme ka ọ bụrụ njọ karịa?',
     'Gịnị na-enye gị oge ike, ọ bụrụ naanị obere?',
-    'I nwere ọkụ ọkụ n\'ahụ, oyi, ma ọ bụ ọchịchọ na abalị?',
-    'I hụrụ mgbanwe ọ bụla na mkpa nri, ibu, mmiri ike, ma ọ bụ mmụọ ime ụbọchị n\'oge na-adịghị anya?',
+    "I nwere ọkụ ọkụ n'ahụ, oyi, ma ọ bụ ọchịchọ na abalị?",
+    "I hụrụ mgbanwe ọ bụla na mkpa nri, ibu, mmiri ike, ma ọ bụ mmụọ ime ụbọchị n'oge na-adịghị anya?",
   ],
   pcm: [
     'Where exactly for your body you dey feel this? You fit point or describe the place?',
