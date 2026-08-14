@@ -144,7 +144,7 @@ export default function AdminPage() {
             <ShieldAlert className="h-5 w-5 shrink-0 text-urgency-urgent" />
             <p className="text-sm text-dark-text">
               <span className="font-bold">{pendingClinicians.length} clinician{pendingClinicians.length > 1 ? 's' : ''}</span> pending verification.{' '}
-              <button onClick={() => setActiveTab('clinicians')} className="underline text-ember">Review now</button>
+              <button onClick={() => setActiveTab('clinicians')} className="underline text-teal">Review now</button>
             </p>
           </div>
         )}
@@ -157,7 +157,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab(tab)}
               className={`flex-1 rounded-lg py-2 text-sm font-semibold capitalize transition-colors ${
                 activeTab === tab
-                  ? 'bg-ember text-white'
+                  ? 'bg-teal text-white'
                   : 'text-dark-muted hover:text-dark-text'
               }`}
             >
@@ -173,7 +173,7 @@ export default function AdminPage() {
 
         {loading && (
           <div className="flex justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-ember" />
+            <Loader2 className="h-8 w-8 animate-spin text-teal" />
           </div>
         )}
 
@@ -209,7 +209,7 @@ export default function AdminPage() {
                   return (
                     <div key={date} className="flex flex-1 flex-col items-center gap-1" title={`${date}: ${count}`}>
                       <div
-                        className="w-full rounded-sm bg-ember/60 transition-all"
+                        className="w-full rounded-sm bg-teal/60 transition-all"
                         style={{ height: `${height}%` }}
                       />
                     </div>
@@ -275,7 +275,7 @@ export default function AdminPage() {
                       className={`w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
                         c.verification_status === 'verified'
                           ? 'border border-urgency-emergency/30 text-urgency-emergency hover:bg-urgency-emergency-dark-bg'
-                          : 'bg-ember text-white hover:bg-ember-dark'
+                          : 'bg-teal text-white hover:bg-teal-dark'
                       }`}
                     >
                       {c.verification_status === 'verified' ? 'Revoke verification' : 'Verify clinician'}

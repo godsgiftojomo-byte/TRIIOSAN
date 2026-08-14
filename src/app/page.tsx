@@ -23,7 +23,7 @@ export default function LandingPage() {
 
       {/* Hero — pattern prominent here */}
       <section className="relative overflow-hidden">
-        <div className="pattern-overlay pattern-strong absolute inset-0 bg-ember" style={{ opacity: 1 }} />
+        <div className="pattern-overlay pattern-strong absolute inset-0 bg-teal" style={{ opacity: 1 }} />
         <div className="relative px-6 py-16 sm:px-10 sm:py-24">
           <div className="mx-auto max-w-2xl text-center">
             <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-white">
@@ -38,7 +38,7 @@ export default function LandingPage() {
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <Link
                 href="/signup"
-                className="group inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-base font-bold text-ember shadow-card transition-all hover:shadow-md active:scale-[0.98]"
+                className="group inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-base font-bold text-teal shadow-card transition-all hover:shadow-md active:scale-[0.98]"
               >
                 {t('landing.ctaPatient')}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -68,11 +68,11 @@ export default function LandingPage() {
               { step: '03', title: t('landing.step3Title'), desc: t('landing.step3Desc'), icon: Stethoscope },
             ].map(({ step, title, desc, icon: Icon }) => (
               <div key={step} className="card pattern-section pattern-faint relative overflow-hidden">
-                <p className="font-display text-4xl font-extrabold text-ember/10 dark:text-ember/20 absolute top-3 right-4">
+                <p className="font-display text-4xl font-extrabold text-teal/10 dark:text-teal/20 absolute top-3 right-4">
                   {step}
                 </p>
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-ember/10">
-                  <Icon className="h-5 w-5 text-ember" />
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-teal/10">
+                  <Icon className="h-5 w-5 text-teal" />
                 </div>
                 <h3 className="font-display text-base font-bold text-ink dark:text-dark-text">{title}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-ink/60 dark:text-dark-muted">{desc}</p>
@@ -99,7 +99,7 @@ export default function LandingPage() {
       <section className="pattern-overlay pattern-medium border-t border-ink/8 dark:border-dark-border bg-ink dark:bg-dark-surface px-6 py-10 sm:px-10">
         <div className="mx-auto max-w-2xl flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left sm:justify-between">
           <div className="flex items-center gap-3">
-            <ShieldCheck className="h-8 w-8 text-ember shrink-0" />
+            <ShieldCheck className="h-8 w-8 text-teal shrink-0" />
             <div>
               <p className="font-display font-bold text-white">{t('landing.clinicianCta')}</p>
               <p className="text-sm text-white/50">{t('landing.clinicianCtaDesc')}</p>

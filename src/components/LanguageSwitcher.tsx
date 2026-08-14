@@ -29,9 +29,9 @@ export function LanguageSwitcher() {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center gap-1.5 rounded-full border border-ink/10 bg-white px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:border-ember/40"
+        className="flex items-center gap-1.5 rounded-full border border-ink/10 bg-white px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:border-teal/40"
       >
-        <Globe className="h-4 w-4 text-ember" aria-hidden="true" />
+        <Globe className="h-4 w-4 text-teal" aria-hidden="true" />
         {current.nativeLabel}
       </button>
 
@@ -50,7 +50,7 @@ export function LanguageSwitcher() {
                   setLang(l.code)
                   setOpen(false)
                 }}
-                className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-ink hover:bg-ember-50"
+                className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-ink hover:bg-teal-50"
               >
                 <span>
                   {l.nativeLabel}
@@ -58,7 +58,7 @@ export function LanguageSwitcher() {
                     <span className="ml-1 text-ink/40">({l.label})</span>
                   )}
                 </span>
-                {l.code === lang && <Check className="h-4 w-4 text-ember" aria-hidden="true" />}
+                {l.code === lang && <Check className="h-4 w-4 text-teal" aria-hidden="true" />}
               </button>
             </li>
           ))}

@@ -18,10 +18,10 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Triiosan — Digital Health Triage',
+  title: 'TetradCare — Digital Health Triage',
   description: 'Know what to do before you reach the clinic. AI-powered triage for every Nigerian.',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FBF6F0' },
+    { media: '(prefers-color-scheme: light)', color: '#F2F7F8' },
     { media: '(prefers-color-scheme: dark)', color: '#0F1210' },
   ],
 }

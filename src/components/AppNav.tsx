@@ -48,7 +48,7 @@ export function AppNav({ role, fullName }: { role: UserRole; fullName: string })
                 key={link.href}
                 href={link.href}
                 className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  active ? 'bg-ember-50 text-ember' : 'text-ink/60 hover:text-ink'
+                  active ? 'bg-teal-50 text-teal' : 'text-ink/60 hover:text-ink'
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -65,7 +65,7 @@ export function AppNav({ role, fullName }: { role: UserRole; fullName: string })
             type="button"
             onClick={handleSignOut}
             title={t('nav.signOut')}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/10 bg-white text-ink/60 transition-colors hover:text-ember"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/10 bg-white text-ink/60 transition-colors hover:text-teal"
           >
             <LogOut className="h-4 w-4" />
           </button>
@@ -82,7 +82,7 @@ export function AppNav({ role, fullName }: { role: UserRole; fullName: string })
               key={link.href}
               href={link.href}
               className={`flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                active ? 'bg-ember-50 text-ember' : 'text-ink/60'
+                active ? 'bg-teal-50 text-teal' : 'text-ink/60'
               }`}
             >
               <Icon className="h-4 w-4" />

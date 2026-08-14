@@ -1,5 +1,5 @@
 /**
- * Prompts for Triiosan's Gemini-powered triage AI.
+ * Prompts for TetradCare's Gemini-powered triage AI.
  *
  * Design principles:
  * 1. Follow-up questions are genuinely complaint-specific — not generic fallbacks.
@@ -103,7 +103,7 @@ export function buildAssessmentPrompt(
 
   const languageInstruction = LANGUAGE_INSTRUCTIONS[language] || LANGUAGE_INSTRUCTIONS.en
 
-  return `You are a clinical triage AI for Triiosan, a Nigerian digital health platform.
+  return `You are a clinical triage AI for TetradCare, a Nigerian digital health platform.
 A patient has described their complaint and answered screening questions.
 Your job is to assess urgency and provide structured triage output.
 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { generateWithGemini } from '@/lib/anthropic/client'
-import { buildFollowUpPrompt, parseModelJson } from '@/lib/anthropic/prompts'
+import { generateWithGemini } from '@/lib/ai/client'
+import { buildFollowUpPrompt, parseModelJson } from '@/lib/ai/prompts'
 import type { Language, ChecklistItem } from '@/lib/supabase/types'
 
 /**

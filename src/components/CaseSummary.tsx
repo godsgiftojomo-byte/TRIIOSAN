@@ -90,14 +90,14 @@ export function CaseSummary({
       {triageCase.recommended_tests.length > 0 && (
         <div className="card">
           <h3 className="mb-2 flex items-center gap-2 font-display text-xs font-bold uppercase tracking-wide text-ink/40">
-            <FlaskConical className="h-3.5 w-3.5 text-ember" />
+            <FlaskConical className="h-3.5 w-3.5 text-teal" />
             {t('thread.recommendedTests')}
           </h3>
           <ul className="flex flex-wrap gap-2">
             {triageCase.recommended_tests.map((test, i) => (
               <li
                 key={i}
-                className="rounded-full border border-ember/20 bg-ember-50 px-3 py-1 text-xs font-medium text-ember-dark"
+                className="rounded-full border border-teal/20 bg-teal-50 px-3 py-1 text-xs font-medium text-teal-dark"
               >
                 {test}
               </li>
@@ -108,8 +108,8 @@ export function CaseSummary({
 
       {/* Appointment info, if scheduled */}
       {triageCase.appointment_facility && (
-        <div className="card border-ember/20 bg-ember-50">
-          <h3 className="mb-1.5 font-display text-xs font-bold uppercase tracking-wide text-ember-dark">
+        <div className="card border-teal/20 bg-teal-50">
+          <h3 className="mb-1.5 font-display text-xs font-bold uppercase tracking-wide text-teal-dark">
             {t('thread.appointmentTitle')}
           </h3>
           <p className="text-sm font-medium text-ink">{triageCase.appointment_facility}</p>

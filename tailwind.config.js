@@ -15,10 +15,10 @@ module.exports = {
       colors: {
         // Brand
         ink:        'rgb(22 36 33 / <alpha-value>)',
-        ember:      '#E8622D',
-        'ember-dark': '#C44818',
-        'ember-light': '#F08050',
-        cream:      '#FBF6F0',
+        teal:      '#0F7285',
+        'teal-dark': '#0B5665',
+        'teal-light': '#2E97AB',
+        cream:      '#F2F7F8',
 
         // Dark mode surfaces
         dark: {

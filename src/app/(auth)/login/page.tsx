@@ -43,7 +43,7 @@ export default function PatientLoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <div className="pattern-overlay pattern-strong h-2 bg-ember" />
+      <div className="pattern-overlay pattern-strong h-2 bg-teal" />
 
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
@@ -115,7 +115,7 @@ export default function PatientLoginPage() {
 
             <p className="mt-5 text-center text-sm text-ink/50 dark:text-dark-muted">
               New patient?{' '}
-              <Link href="/signup" className="font-semibold text-ember hover:text-ember-dark">
+              <Link href="/signup" className="font-semibold text-teal hover:text-teal-dark">
                 Create an account
               </Link>
             </p>

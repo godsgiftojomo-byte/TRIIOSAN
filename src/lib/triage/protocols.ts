@@ -1,5 +1,5 @@
 /**
- * Clinical Protocols for Triiosan Triage Engine
+ * Clinical Protocols for TetradCare Triage Engine
  *
  * Sources:
  * - Nigerian Federal Ministry of Health (FMOH) Primary Health Care guidelines

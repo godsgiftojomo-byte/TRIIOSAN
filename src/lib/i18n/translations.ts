@@ -16,7 +16,22 @@ export const LANGUAGES: { code: Language; label: string; nativeLabel: string }[]
 export const translations: Record<Language, Record<string, string>> = {
   en: {
     // App-wide
-    'app.name': 'Triiosan',
+    'app.name': 'TetradCare',
+    'thread.statusScheduled': 'Scheduled',
+    'thread.statusAttended': 'Attended',
+    'thread.statusNoShow': 'Did not attend',
+    'clinician.appointmentWindow': 'Arrival window',
+    'clinician.noSlotsAvailable': 'No windows available for this facility yet.',
+    'clinician.selectFacilityFirst': 'Choose a facility to see available windows.',
+    'clinician.seatsLeft': 'places left',
+    'clinician.confirmBooking': 'Confirm booking',
+    'clinician.cadreNote': 'Recommended for',
+    'clinician.sameDayOnly': 'same day only',
+    'clinician.emergencyNoBooking': 'Do not book this case',
+    'clinician.emergencyNoBookingBody': 'This case is flagged as an emergency. Direct the patient to the nearest facility now. Emergency cases are never given an appointment.',
+    'clinician.scheduledSection': 'Booked patients',
+    'clinician.scheduledEmpty': 'No patients booked yet.',
+    'common.loading': 'Loading…',
     'app.tagline': 'Know what to do next, before you reach the hospital.',
 
     // Nav
@@ -53,11 +68,11 @@ export const translations: Record<Language, Record<string, string>> = {
     // Landing
     'landing.heroTitle': 'A guided first step, before you reach the clinic.',
     'landing.heroSubtitle':
-      'Describe how you feel in your own words. Triiosan helps you understand how urgent it is, what tests might help, and connects you with a clinician — in English, Yorùbá, Hausa, Igbo, or Pidgin.',
+      'Describe how you feel in your own words. TetradCare helps you understand how urgent it is, what tests might help, and connects you with a clinician — in English, Yorùbá, Hausa, Igbo, or Pidgin.',
     'landing.ctaPatient': 'Check my symptoms',
     'landing.ctaClinician': 'Clinician sign in',
     'landing.disclaimer':
-      'Triiosan supports — it does not replace — professional medical care. In a medical emergency, go to the nearest hospital immediately.',
+      'TetradCare supports — it does not replace — professional medical care. In a medical emergency, go to the nearest hospital immediately.',
 
     // New case / symptom checker
     'case.step1Title': "Tell us what's going on",
@@ -99,7 +114,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'thread.appointmentFor': 'For',
     'thread.yourComplaint': 'Your complaint',
     'thread.checklist': 'Additional details',
-    'thread.aiAssessment': "Triiosan's assessment",
+    'thread.aiAssessment': "TetradCare's assessment",
     'thread.recommendedTests': 'Recommended tests',
     'thread.newCaseNote': 'This case is closed. Start a new check-in for a new concern.',
 
@@ -119,15 +134,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'clinician.appointmentPurposePlaceholder':
       'e.g. Lab tests: Malaria RDT, FBC — or Consultation: General Medicine',
     'clinician.appointmentDate': 'Date & time',
-    'clinician.confirmClose': 'Schedule & close case',
     'clinician.patientInfo': 'Patient',
     'clinician.submittedAt': 'Submitted',
 
     // Facilities (placeholder list)
-    'facility.ooutch': 'OOU Teaching Hospital, Sagamu',
-    'facility.ghIkenne': 'General Hospital, Ikenne',
-    'facility.ghSagamu': 'General Hospital, Sagamu',
-    'facility.phcRemo': 'Primary Health Centre, Remo North',
 
     // Misc
     'common.loading': 'Loading...',
@@ -153,12 +163,27 @@ export const translations: Record<Language, Record<string, string>> = {
     'landing.step3Desc': 'Your case goes to a verified clinician who reviews and responds in real time.',
     'landing.triagePreviewTitle': 'Three urgency levels, instantly classified',
     'landing.clinicianCta': 'Are you a clinician?',
-    'landing.clinicianCtaDesc': 'Join the Triiosan clinician network and review patient cases.',
+    'landing.clinicianCtaDesc': 'Join the TetradCare clinician network and review patient cases.',
     'common.required': 'Required',
   },
 
   yo: {
-    'app.name': 'Triiosan',
+    'app.name': 'TetradCare',
+    'thread.statusScheduled': 'A ti ṣètò',
+    'thread.statusAttended': 'Ó wá',
+    'thread.statusNoShow': 'Kò wá',
+    'clinician.appointmentWindow': 'Àkókò dídé',
+    'clinician.noSlotsAvailable': 'Kò sí àkókò tí ó ṣí sílẹ̀ ní ilé ìwòsàn yìí.',
+    'clinician.selectFacilityFirst': 'Yan ilé ìwòsàn láti rí àwọn àkókò tí ó wà.',
+    'clinician.seatsLeft': 'ààyè ṣẹ́kù',
+    'clinician.confirmBooking': 'Fọwọ́sí ìwé ìpàdé',
+    'clinician.cadreNote': 'A gbani nímọ̀ràn fún',
+    'clinician.sameDayOnly': 'ọjọ́ kan náà nìkan',
+    'clinician.emergencyNoBooking': 'Má ṣe ṣètò ọ̀ràn yìí',
+    'clinician.emergencyNoBookingBody': 'Ọ̀ràn yìí jẹ́ pàjáwìrì. Rán aláìsàn náà lọ sí ilé ìwòsàn tó sún mọ́ ọ lẹ́sẹ̀kẹsẹ̀. A kì í ṣètò àkókò fún ọ̀ràn pàjáwìrì.',
+    'clinician.scheduledSection': 'Àwọn aláìsàn tí a ti ṣètò',
+    'clinician.scheduledEmpty': 'Kò sí aláìsàn tí a ti ṣètò.',
+    'common.loading': 'Ń gbé…',
     'app.tagline': 'Mọ ohun tí o yẹ kí o ṣe, kí o tó dé ilé ìwòsàn.',
 
     'nav.dashboard': 'Dashboard',
@@ -192,11 +217,11 @@ export const translations: Record<Language, Record<string, string>> = {
 
     'landing.heroTitle': 'Ìgbésẹ̀ àkọ́kọ́ tó dán mọ́rán, kí o tó dé ilé ìwòsàn.',
     'landing.heroSubtitle':
-      'Ṣàpèjúwe bí ara rẹ ti rí ní ọ̀rọ̀ tìrẹ. Triiosan yóò ràn ọ́ lọ́wọ́ láti mọ bí ipò náà ṣe pọn dandan, àwọn àyẹ̀wò tí ó lè ṣe ìrànlọ́wọ́, kí ó sì so ọ́ pọ̀ pẹ̀lú dókítà — ní èdè Gẹ̀ẹ́sì, Yorùbá, Hausa, Igbo, tàbí Pidgin.',
+      'Ṣàpèjúwe bí ara rẹ ti rí ní ọ̀rọ̀ tìrẹ. TetradCare yóò ràn ọ́ lọ́wọ́ láti mọ bí ipò náà ṣe pọn dandan, àwọn àyẹ̀wò tí ó lè ṣe ìrànlọ́wọ́, kí ó sì so ọ́ pọ̀ pẹ̀lú dókítà — ní èdè Gẹ̀ẹ́sì, Yorùbá, Hausa, Igbo, tàbí Pidgin.',
     'landing.ctaPatient': 'Ṣàyẹ̀wò àwọn àmì àìsàn mi',
     'landing.ctaClinician': 'Ìwọlé dókítà',
     'landing.disclaimer':
-      'Triiosan jẹ́ ìrànlọ́wọ́ — kò sì rọ́pò ìtọ́jú ìṣègùn tó dán mọ́rán. Bí ìpọ̀njú pàjáwìrì bá wáyé, lọ sí ilé ìwòsàn tó sún mọ́ ọ lẹ́sẹ̀kẹsẹ̀.',
+      'TetradCare jẹ́ ìrànlọ́wọ́ — kò sì rọ́pò ìtọ́jú ìṣègùn tó dán mọ́rán. Bí ìpọ̀njú pàjáwìrì bá wáyé, lọ sí ilé ìwòsàn tó sún mọ́ ọ lẹ́sẹ̀kẹsẹ̀.',
 
     'case.step1Title': 'Sọ ohun tí ó ń ṣẹlẹ̀',
     'case.step1Prompt':
@@ -236,7 +261,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'thread.appointmentFor': 'Fún',
     'thread.yourComplaint': 'Ohun tí o sọ',
     'thread.checklist': 'Àlàyé síi',
-    'thread.aiAssessment': 'Àyẹ̀wò Triiosan',
+    'thread.aiAssessment': 'Àyẹ̀wò TetradCare',
     'thread.recommendedTests': 'Àwọn àyẹ̀wò tí a gbà níyànjú',
     'thread.newCaseNote': 'Ọ̀rọ̀ yìí ti pa. Bẹ̀rẹ̀ ìbẹ̀rẹ̀ tuntun fún àìsàn mìíràn.',
 
@@ -254,14 +279,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'clinician.appointmentPurposePlaceholder':
       'f.a. Àyẹ̀wò: Malaria RDT, FBC — tàbí Ìmọ̀ràn: Ìṣègùn gbogbogbòò',
     'clinician.appointmentDate': 'Ọjọ́ àti àkókò',
-    'clinician.confirmClose': 'Ṣètò kí o sì pa ọ̀rọ̀',
     'clinician.patientInfo': 'Aláìsàn',
     'clinician.submittedAt': 'Fi ránṣẹ́ ní',
-
-    'facility.ooutch': 'Ilé Ìwòsàn Ẹ̀kọ́ OOU, Sagamu',
-    'facility.ghIkenne': 'Ilé Ìwòsàn Gbogbogbòò, Ikenne',
-    'facility.ghSagamu': 'Ilé Ìwòsàn Gbogbogbòò, Sagamu',
-    'facility.phcRemo': 'Ilé Ìwòsàn Alákọ́ọ̀bẹ̀rẹ̀, Remo North',
 
     'common.loading': 'Ń kò...',
     'common.error': 'Àṣìṣe kan ṣẹlẹ̀.',
@@ -285,12 +304,27 @@ export const translations: Record<Language, Record<string, string>> = {
     'landing.step3Desc': 'Ọ̀ràn rẹ lọ sí dókítà tó jẹ́rìí, tí ó ń ṣàgbéyẹ̀wò tí ó sì ń dáhùn ní àkókò gidi.',
     'landing.triagePreviewTitle': 'Ìwọ̀n pàtàkì mẹ́ta, tí a tò lẹ́sẹ̀kẹsẹ̀',
     'landing.clinicianCta': 'Ṣé o jẹ́ dókítà?',
-    'landing.clinicianCtaDesc': 'Darapọ̀ mọ̀ nẹ́tìwọọkì dókítà Triiosan kí o sì ṣàgbéyẹ̀wò àwọn ọ̀ràn àwọn aláìsàn.',
+    'landing.clinicianCtaDesc': 'Darapọ̀ mọ̀ nẹ́tìwọọkì dókítà TetradCare kí o sì ṣàgbéyẹ̀wò àwọn ọ̀ràn àwọn aláìsàn.',
     'common.required': 'Pàtàkì',
   },
 
   ha: {
-    'app.name': 'Triiosan',
+    'app.name': 'TetradCare',
+    'thread.statusScheduled': 'An Tsara',
+    'thread.statusAttended': 'Ya Zo',
+    'thread.statusNoShow': 'Bai Zo Ba',
+    'clinician.appointmentWindow': 'Lokacin zuwa',
+    'clinician.noSlotsAvailable': 'Babu lokutan da suka rage a wannan asibiti.',
+    'clinician.selectFacilityFirst': 'Zaɓi asibiti don ganin lokutan da ake da su.',
+    'clinician.seatsLeft': 'wurare sun rage',
+    'clinician.confirmBooking': 'Tabbatar da alƙawari',
+    'clinician.cadreNote': 'An ba da shawarar',
+    'clinician.sameDayOnly': 'rana ɗaya kawai',
+    'clinician.emergencyNoBooking': 'Kada a tsara wannan',
+    'clinician.emergencyNoBookingBody': 'An ɗauki wannan a matsayin gaggawa. Ka tura mai haƙuri asibiti mafi kusa nan take. Ba a ba da alƙawari ga lamuran gaggawa.',
+    'clinician.scheduledSection': 'Marasa lafiya da aka tsara',
+    'clinician.scheduledEmpty': 'Babu wanda aka tsara tukuna.',
+    'common.loading': 'Ana ɗaukewa…',
     'app.tagline': 'Sani abin yi na gaba, kafin ka kai asibiti.',
 
     'nav.dashboard': 'Dashboard',
@@ -324,11 +358,11 @@ export const translations: Record<Language, Record<string, string>> = {
 
     'landing.heroTitle': 'Mataki na farko mai kyau, kafin ka kai asibiti.',
     'landing.heroSubtitle':
-      'Bayyana yadda jikinka yake da kalmominka. Triiosan zai taimaka maka gane matakin gaggawa, gwaje-gwajen da za su taimaka, kuma ya haɗa ka da likita — cikin Turanci, Yarbanci, Hausa, Igbo, ko Pidgin.',
+      'Bayyana yadda jikinka yake da kalmominka. TetradCare zai taimaka maka gane matakin gaggawa, gwaje-gwajen da za su taimaka, kuma ya haɗa ka da likita — cikin Turanci, Yarbanci, Hausa, Igbo, ko Pidgin.',
     'landing.ctaPatient': 'Bincika alamomina',
     'landing.ctaClinician': 'Shigar likita',
     'landing.disclaimer':
-      'Triiosan yana taimakawa — ba ya maye gurbin kulawar likita ta ƙwararru. A cikin gaggawa ta lafiya, je asibiti mafi kusa nan take.',
+      'TetradCare yana taimakawa — ba ya maye gurbin kulawar likita ta ƙwararru. A cikin gaggawa ta lafiya, je asibiti mafi kusa nan take.',
 
     'case.step1Title': 'Faɗa mana abin da ke faruwa',
     'case.step1Prompt':
@@ -368,7 +402,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'thread.appointmentFor': 'Don',
     'thread.yourComplaint': 'Korafinku',
     'thread.checklist': 'Ƙarin bayani',
-    'thread.aiAssessment': 'Binciken Triiosan',
+    'thread.aiAssessment': 'Binciken TetradCare',
     'thread.recommendedTests': 'Gwaje-gwajen da aka shawarta',
     'thread.newCaseNote': 'An rufe wannan lamarin. Fara sabuwar bincike don sabon damuwa.',
 
@@ -386,14 +420,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'clinician.appointmentPurposePlaceholder':
       'misali: Gwaje-gwaje: Malaria RDT, FBC — ko Shawara: Likitancin Gaba ɗaya',
     'clinician.appointmentDate': 'Kwanan wata da lokaci',
-    'clinician.confirmClose': 'Shirya kuma rufe lamari',
     'clinician.patientInfo': 'Mara lafiya',
     'clinician.submittedAt': 'An aika',
-
-    'facility.ooutch': 'Asibitin Koyarwa na OOU, Sagamu',
-    'facility.ghIkenne': 'Babban Asibiti, Ikenne',
-    'facility.ghSagamu': 'Babban Asibiti, Sagamu',
-    'facility.phcRemo': 'Cibiyar Kiwon Lafiya ta Farko, Remo North',
 
     'common.loading': 'Ana lodawa...',
     'common.error': 'Akwai matsala.',
@@ -417,12 +445,27 @@ export const translations: Record<Language, Record<string, string>> = {
     'landing.step3Desc': 'Kayanku yana zuwa wani likita da aka tabbatar wanda ke bitar su kuma yana amsa a lokaci na gaske.',
     'landing.triagePreviewTitle': 'Matakan gaggawa guda uku, an rarraba su nan take',
     'landing.clinicianCta': 'Shin likita ne ku?',
-    'landing.clinicianCtaDesc': 'Shiga cibiyar sadarwa ta likita ta Triiosan ku duba kayanku na marasa lafiya.',
+    'landing.clinicianCtaDesc': 'Shiga cibiyar sadarwa ta likita ta TetradCare ku duba kayanku na marasa lafiya.',
     'common.required': 'Wajibi',
   },
 
   ig: {
-    'app.name': 'Triiosan',
+    'app.name': 'TetradCare',
+    'thread.statusScheduled': 'Ahazịrị Ya',
+    'thread.statusAttended': 'Ọ Bịara',
+    'thread.statusNoShow': 'Ọ Bịaghị',
+    'clinician.appointmentWindow': 'Oge ịbịa',
+    'clinician.noSlotsAvailable': 'Enweghị oge dị na ụlọ ọgwụ a.',
+    'clinician.selectFacilityFirst': 'Họrọ ụlọ ọgwụ ka ị hụ oge ndị dị.',
+    'clinician.seatsLeft': 'ọnọdụ fọdụrụ',
+    'clinician.confirmBooking': 'Kwadoo ndokwa ahụ',
+    'clinician.cadreNote': 'A tụrụ aro maka',
+    'clinician.sameDayOnly': 'naanị otu ụbọchị',
+    'clinician.emergencyNoBooking': 'Ahaziela okwu a',
+    'clinician.emergencyNoBookingBody': 'Akara okwu a dị ka ihe mberede. Zipu onye ọrịa ahụ ụlọ ọgwụ kacha nso ozugbo. Anaghị enye ndokwa maka ihe mberede.',
+    'clinician.scheduledSection': 'Ndị ọrịa ahazịrị',
+    'clinician.scheduledEmpty': 'Ahazibeghị onye ọ bụla.',
+    'common.loading': 'Na-ebu…',
     'app.tagline': 'Mata ihe ị ga-eme ọzọ, tupu ị ruo ụlọ ọgwụ.',
 
     'nav.dashboard': 'Dashboard',
@@ -456,11 +499,11 @@ export const translations: Record<Language, Record<string, string>> = {
 
     'landing.heroTitle': 'Nzọụkwụ mbụ kwesịrị ekwesị, tupu ị ruo ụlọ ọgwụ.',
     'landing.heroSubtitle':
-      'Kọwaa otú ahụ́ gị dị n’okwu nke gị. Triiosan ga-enyere gị aka ịghọta ọkwa mberede ya, ule nwere ike inye aka, ma jikọta gị na dọkịta — n’asụsụ Bekee, Yoruba, Hausa, Igbo, ma ọ bụ Pidgin.',
+      'Kọwaa otú ahụ́ gị dị n’okwu nke gị. TetradCare ga-enyere gị aka ịghọta ọkwa mberede ya, ule nwere ike inye aka, ma jikọta gị na dọkịta — n’asụsụ Bekee, Yoruba, Hausa, Igbo, ma ọ bụ Pidgin.',
     'landing.ctaPatient': 'Lelee mgbaàmà m',
     'landing.ctaClinician': 'Nbanye dọkịta',
     'landing.disclaimer':
-      'Triiosan na-enyere aka — ọ naghị anọchi anata ọgwụgwọ ndị ọkachamara. Ọ bụrụ na ọ bụ ihe mberede ahụike, gaa ụlọ ọgwụ kacha nso ozugbo.',
+      'TetradCare na-enyere aka — ọ naghị anọchi anata ọgwụgwọ ndị ọkachamara. Ọ bụrụ na ọ bụ ihe mberede ahụike, gaa ụlọ ọgwụ kacha nso ozugbo.',
 
     'case.step1Title': 'Gwa anyị ihe na-eme',
     'case.step1Prompt':
@@ -500,7 +543,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'thread.appointmentFor': 'Maka',
     'thread.yourComplaint': 'Mkpesa gị',
     'thread.checklist': 'Nkọwa ọzọ',
-    'thread.aiAssessment': 'Nyocha Triiosan',
+    'thread.aiAssessment': 'Nyocha TetradCare',
     'thread.recommendedTests': 'Ule a tụrụ aro',
     'thread.newCaseNote': 'Okwu a emechiri. Malite nyocha ọhụrụ maka nsogbu ọhụrụ.',
 
@@ -518,14 +561,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'clinician.appointmentPurposePlaceholder':
       'ọmụmaatụ: Ule: Malaria RDT, FBC — ma ọ bụ Ndụmọdụ: Ọgwụgwọ Izugbe',
     'clinician.appointmentDate': 'Ụbọchị na oge',
-    'clinician.confirmClose': 'Hazie ma mechie okwu',
     'clinician.patientInfo': 'Onye ọrịa',
     'clinician.submittedAt': 'Ezipụrụ',
-
-    'facility.ooutch': 'Ụlọ Ọgwụ Nkuzi OOU, Sagamu',
-    'facility.ghIkenne': 'Ụlọ Ọgwụ Izugbe, Ikenne',
-    'facility.ghSagamu': 'Ụlọ Ọgwụ Izugbe, Sagamu',
-    'facility.phcRemo': 'Ebe Nlekọta Ahụike Mbụ, Remo North',
 
     'common.loading': 'Na-ebu...',
     'common.error': 'Ihe ọjọọ mere.',
@@ -549,12 +586,27 @@ export const translations: Record<Language, Record<string, string>> = {
     'landing.step3Desc': "Okwu gị na-aga na dọkịta nkwenye nke na-elele ma zaghachi n'oge n'oge.",
     'landing.triagePreviewTitle': 'Ọkwa nsogbu atọ, akpọpụtara ozugbo',
     'landing.clinicianCta': 'Ị bụ dọkịta?',
-    'landing.clinicianCtaDesc': 'Sonyere netwọkụ dọkịta Triiosan ma lele okwu ndị ọrịa.',
+    'landing.clinicianCtaDesc': 'Sonyere netwọkụ dọkịta TetradCare ma lele okwu ndị ọrịa.',
     'common.required': 'Achọrọ',
   },
 
   pcm: {
-    'app.name': 'Triiosan',
+    'app.name': 'TetradCare',
+    'thread.statusScheduled': 'Don book',
+    'thread.statusAttended': 'E come',
+    'thread.statusNoShow': 'E no come',
+    'clinician.appointmentWindow': 'Time wey you go come',
+    'clinician.noSlotsAvailable': 'No time dey for this hospital yet.',
+    'clinician.selectFacilityFirst': 'Pick hospital first make you see the times wey dey.',
+    'clinician.seatsLeft': 'space remain',
+    'clinician.confirmBooking': 'Confirm the booking',
+    'clinician.cadreNote': 'We recommend am for',
+    'clinician.sameDayOnly': 'na same day only',
+    'clinician.emergencyNoBooking': 'No book this one',
+    'clinician.emergencyNoBookingBody': 'Na emergency be this. Send the patient go the nearest hospital sharp sharp. We no dey give appointment for emergency.',
+    'clinician.scheduledSection': 'Patients wey don book',
+    'clinician.scheduledEmpty': 'Nobody don book yet.',
+    'common.loading': 'E dey load…',
     'app.tagline': 'Know wetin to do next, before you reach hospital.',
 
     'nav.dashboard': 'Dashboard',
@@ -588,11 +640,11 @@ export const translations: Record<Language, Record<string, string>> = {
 
     'landing.heroTitle': 'Better first step, before you reach clinic.',
     'landing.heroSubtitle':
-      'Tell us how your body dey feel, your own way. Triiosan go help you understand how serious e be, wetin test fit help, and connect you to doctor — for English, Yoruba, Hausa, Igbo, or Pidgin.',
+      'Tell us how your body dey feel, your own way. TetradCare go help you understand how serious e be, wetin test fit help, and connect you to doctor — for English, Yoruba, Hausa, Igbo, or Pidgin.',
     'landing.ctaPatient': 'Check my symptoms',
     'landing.ctaClinician': 'Clinician sign in',
     'landing.disclaimer':
-      'Triiosan dey support — e no dey replace professional medical care. If na emergency, go nearest hospital sharp sharp.',
+      'TetradCare dey support — e no dey replace professional medical care. If na emergency, go nearest hospital sharp sharp.',
 
     'case.step1Title': 'Tell us wetin dey happen',
     'case.step1Prompt':
@@ -632,7 +684,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'thread.appointmentFor': 'For',
     'thread.yourComplaint': 'Your complaint',
     'thread.checklist': 'More details',
-    'thread.aiAssessment': "Triiosan assessment",
+    'thread.aiAssessment': "TetradCare assessment",
     'thread.recommendedTests': 'Recommended tests',
     'thread.newCaseNote': 'This case don close. Start new check-in for new concern.',
 
@@ -650,14 +702,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'clinician.appointmentPurposePlaceholder':
       'e.g. Lab tests: Malaria RDT, FBC — or Consultation: General Medicine',
     'clinician.appointmentDate': 'Date & time',
-    'clinician.confirmClose': 'Schedule & close case',
     'clinician.patientInfo': 'Patient',
     'clinician.submittedAt': 'Submitted',
-
-    'facility.ooutch': 'OOU Teaching Hospital, Sagamu',
-    'facility.ghIkenne': 'General Hospital, Ikenne',
-    'facility.ghSagamu': 'General Hospital, Sagamu',
-    'facility.phcRemo': 'Primary Health Centre, Remo North',
 
     'common.loading': 'Dey load...',
     'common.error': 'Something no work.',
@@ -681,11 +727,21 @@ export const translations: Record<Language, Record<string, string>> = {
     'landing.step3Desc': 'Your case go reach verified dokita wey go review and reply you in real time.',
     'landing.triagePreviewTitle': 'Three urgency levels, classified sharp sharp',
     'landing.clinicianCta': 'You be dokita?',
-    'landing.clinicianCtaDesc': 'Join Triiosan clinician network and review patient cases.',
+    'landing.clinicianCtaDesc': 'Join TetradCare clinician network and review patient cases.',
     'common.required': 'Required',
   },
 }
 
-export function t(lang: Language, key: string): string {
+export type TranslationKey = keyof (typeof translations)['en']
+
+/**
+ * `key` is typed against the English block, so a missing or misspelt key
+ * is a compile error now instead of a raw dotted string showing up on a
+ * patient's screen. Other languages fall back to English.
+ *
+ * NOTE: the Yoruba, Hausa and Igbo strings added in Phase 1 are drafts.
+ * A native speaker must review them before go-live.
+ */
+export function t(lang: Language, key: TranslationKey | string): string {
   return translations[lang]?.[key] ?? translations.en[key] ?? key
 }

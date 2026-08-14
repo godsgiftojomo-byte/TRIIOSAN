@@ -9,7 +9,7 @@ export function Wordmark({ className }: { className?: string }) {
       )}
     >
       <span className="text-ink">Trii</span>
-      <span className="text-ember">osan</span>
+      <span className="text-teal">osan</span>
     </span>
   )
 }

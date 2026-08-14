@@ -26,7 +26,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // On mount, read saved preference
   useEffect(() => {
-    const saved = localStorage.getItem('triiosan-theme') as Theme | null
+    const saved = localStorage.getItem('tetradcare-theme') as Theme | null
     if (saved === 'light' || saved === 'dark' || saved === 'system') {
       setThemeState(saved)
     }
@@ -51,7 +51,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   function setTheme(t: Theme) {
     setThemeState(t)
-    localStorage.setItem('triiosan-theme', t)
+    localStorage.setItem('tetradcare-theme', t)
   }
 
   return (

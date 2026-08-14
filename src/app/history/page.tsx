@@ -4,6 +4,7 @@ import { requireProfile } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { AppNav } from '@/components/AppNav'
 import { t } from '@/lib/i18n/translations'
+import { isActive, statusLabelKey } from '@/lib/cases/status'
 import type { TriageCase, Urgency } from '@/lib/supabase/types'
 
 const URGENCY_CONFIG: Record<Urgency, { icon: typeof AlertTriangle; color: string; bg: string }> = {
@@ -52,7 +53,7 @@ export default async function HistoryPage() {
                   <li key={c.id}>
                     <Link
                       href={`/case/${c.id}`}
-                      className="card flex items-center gap-3 transition-colors hover:border-ember/30"
+                      className="card flex items-center gap-3 transition-colors hover:border-teal/30"
                     >
                       <div
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
@@ -77,12 +78,17 @@ export default async function HistoryPage() {
                             })}
                           </span>
                           <span aria-hidden="true">·</span>
+                          {/*
+                            This used to be a two-way check on 'open'
+                            versus everything else, which showed a
+                            scheduled case to the patient as "Closed".
+                          */}
                           <span
                             className={
-                              c.status === 'open' ? 'font-medium text-ember' : 'text-ink/40'
+                              isActive(c.status) ? 'font-medium text-teal' : 'text-ink/40'
                             }
                           >
-                            {t(lang, c.status === 'open' ? 'thread.statusOpen' : 'thread.statusClosed')}
+                            {t(lang, statusLabelKey(c.status))}
                           </span>
                         </div>
                       </div>

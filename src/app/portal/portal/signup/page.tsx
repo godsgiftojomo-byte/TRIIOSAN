@@ -71,23 +71,23 @@ export default function ClinicianSignupPage() {
   if (submitted) {
     return (
       <div className="flex min-h-screen flex-col bg-dark-bg">
-        <div className="pattern-overlay pattern-strong h-2 bg-ember" />
+        <div className="pattern-overlay pattern-strong h-2 bg-teal" />
         <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
           <div className="w-full max-w-sm">
             <div className="rounded-2xl border border-dark-border bg-dark-card p-8 text-center shadow-card-dark">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-ember/10">
-                <ShieldAlert className="h-7 w-7 text-ember" />
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-teal/10">
+                <ShieldAlert className="h-7 w-7 text-teal" />
               </div>
               <h2 className="font-display text-lg font-extrabold text-dark-text">
                 Application submitted
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-dark-muted">
-                Your account has been created and is pending verification by the Triiosan admin team.
+                Your account has been created and is pending verification by the TetradCare admin team.
                 You will be notified once your credentials have been reviewed and approved.
               </p>
               <p className="mt-4 text-xs text-dark-muted/60">
                 Already verified?{' '}
-                <Link href="/portal" className="text-ember hover:text-ember-dark">
+                <Link href="/portal" className="text-teal hover:text-teal-dark">
                   Sign in to the portal
                 </Link>
               </p>
@@ -100,14 +100,14 @@ export default function ClinicianSignupPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-dark-bg">
-      <div className="pattern-overlay pattern-strong h-2 bg-ember" />
+      <div className="pattern-overlay pattern-strong h-2 bg-teal" />
 
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
             <Wordmark className="justify-center" />
             <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-dark-border bg-dark-card px-3 py-1.5">
-              <Stethoscope className="h-3.5 w-3.5 text-ember" />
+              <Stethoscope className="h-3.5 w-3.5 text-teal" />
               <span className="text-xs font-semibold text-dark-muted">Clinician Portal</span>
             </div>
           </div>
@@ -228,7 +228,7 @@ export default function ClinicianSignupPage() {
 
             <p className="mt-5 text-center text-sm text-dark-muted">
               Already have access?{' '}
-              <Link href="/portal" className="font-semibold text-ember hover:text-ember-dark">
+              <Link href="/portal" className="font-semibold text-teal hover:text-teal-dark">
                 Sign in
               </Link>
             </p>

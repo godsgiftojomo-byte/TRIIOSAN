@@ -8,6 +8,7 @@ import { CaseSummary } from '@/components/CaseSummary'
 import { MessageThread } from '@/components/MessageThread'
 import { AppointmentForm } from '@/components/AppointmentForm'
 import { t } from '@/lib/i18n/translations'
+import { isBookable, isThreadOpen } from '@/lib/cases/status'
 import type { CaseMessage, TriageCase } from '@/lib/supabase/types'
 
 export default async function CaseDetailPage({ params }: { params: { id: string } }) {
@@ -42,7 +43,15 @@ export default async function CaseDetailPage({ params }: { params: { id: string 
 
   const isClinician = profile.role === 'clinician'
   const isVerifiedClinician = isClinician && profile.verification_status === 'verified'
-  const isOpen = typedCase.status === 'open'
+
+  // The old code was `const isOpen = typedCase.status === 'open'`, which
+  // still compiles against the five-state lifecycle and is now wrong.
+  // A scheduled case is neither open nor closed, and under the old
+  // check it rendered as closed with the message thread disabled. That
+  // meant a patient could not ask a question about the appointment they
+  // had just been given.
+  const canBook = isBookable(typedCase.status)
+  const threadOpen = isThreadOpen(typedCase.status)
 
   let patientName: string | undefined
   if (isClinician) {
@@ -75,11 +84,15 @@ export default async function CaseDetailPage({ params }: { params: { id: string 
             currentUserId={userId}
             currentUserRole={profile.role}
             initialMessages={messages}
-            disabled={!isOpen}
+            disabled={!threadOpen}
           />
 
-          {isClinician && isOpen && isVerifiedClinician && (
-            <AppointmentForm caseId={typedCase.id} />
+          {isClinician && canBook && isVerifiedClinician && (
+            <AppointmentForm
+              caseId={typedCase.id}
+              urgency={typedCase.urgency}
+              matchedProtocolId={typedCase.matched_protocol_id}
+            />
           )}
         </div>
       </main>

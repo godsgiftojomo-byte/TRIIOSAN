@@ -7,9 +7,9 @@
   :root {
     /* Light mode tokens */
     --color-ink:           22 36 33;
-    --color-ember:         232 98 45;
-    --color-ember-dark:    196 72 24;
-    --color-cream:         251 246 240;
+    --color-teal:         15 114 133;
+    --color-teal-dark:    11 86 101;
+    --color-cream:         242 247 248;
     --color-surface:       255 255 255;
 
     /* Urgency */
@@ -40,7 +40,7 @@
 
   /* Focus rings */
   *:focus-visible {
-    @apply outline-none ring-2 ring-ember ring-offset-2 ring-offset-cream dark:ring-offset-dark-bg;
+    @apply outline-none ring-2 ring-teal ring-offset-2 ring-offset-cream dark:ring-offset-dark-bg;
   }
 
   /* Reduced motion */
@@ -114,7 +114,7 @@
   .input {
     @apply w-full rounded-xl border bg-white dark:bg-dark-surface dark:border-dark-border
            px-4 py-3 text-sm text-ink dark:text-dark-text dark:placeholder:text-dark-muted
-           transition-colors focus:border-ember focus:outline-none focus:ring-2 focus:ring-ember/20
+           transition-colors focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/20
            disabled:opacity-50 disabled:cursor-not-allowed;
     border-color: rgb(22 36 33 / 0.15);
   }
@@ -128,9 +128,9 @@
 
   /* Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-ember px-5 py-3
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-teal px-5 py-3
            font-display text-sm font-bold text-white shadow-sm
-           transition-all hover:bg-ember-dark active:scale-[0.98]
+           transition-all hover:bg-teal-dark active:scale-[0.98]
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
   }
 
@@ -169,7 +169,7 @@
 
   /* Message bubbles */
   .bubble-patient {
-    @apply rounded-2xl rounded-br-sm bg-ember px-4 py-2.5 text-sm text-white shadow-sm;
+    @apply rounded-2xl rounded-br-sm bg-teal px-4 py-2.5 text-sm text-white shadow-sm;
   }
 
   .bubble-clinician {
@@ -184,9 +184,9 @@
     background-color: rgb(22 36 33 / 0.15);
   }
   .step-dot-active {
-    @apply h-1.5 w-4 rounded-full bg-ember;
+    @apply h-1.5 w-4 rounded-full bg-teal;
   }
   .step-dot-done {
-    @apply h-1.5 w-1.5 rounded-full bg-ember/40;
+    @apply h-1.5 w-1.5 rounded-full bg-teal/40;
   }
 }

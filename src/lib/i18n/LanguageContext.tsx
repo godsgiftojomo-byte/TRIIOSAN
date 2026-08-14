@@ -12,7 +12,7 @@ interface LanguageContextValue {
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined)
 
-const STORAGE_KEY = 'triiosan_lang'
+const STORAGE_KEY = 'tetradcare_lang'
 
 export function LanguageProvider({
   children,

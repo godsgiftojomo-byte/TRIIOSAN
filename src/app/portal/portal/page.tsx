@@ -46,7 +46,7 @@ export default function ClinicianPortalPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-dark-bg">
-      <div className="pattern-overlay pattern-strong h-2 bg-ember" />
+      <div className="pattern-overlay pattern-strong h-2 bg-teal" />
 
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
@@ -119,7 +119,7 @@ export default function ClinicianPortalPage() {
 
             <p className="mt-5 text-center text-sm text-dark-muted">
               Not a clinician?{' '}
-              <Link href="/login" className="font-semibold text-ember hover:text-ember-dark">
+              <Link href="/login" className="font-semibold text-teal hover:text-teal-dark">
                 Patient login
               </Link>
             </p>

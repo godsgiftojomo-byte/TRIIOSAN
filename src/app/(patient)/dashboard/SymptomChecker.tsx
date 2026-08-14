@@ -226,8 +226,8 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
       <div className="space-y-4">
         <div className="card pattern-overlay pattern-faint">
           <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-ember/10">
-              <Activity className="h-5 w-5 text-ember" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal/10">
+              <Activity className="h-5 w-5 text-teal" />
             </div>
             <div>
               <h1 className="font-display text-lg font-extrabold text-ink dark:text-dark-text">
@@ -292,7 +292,7 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
   if (step === 'loading-ai-questions') {
     return (
       <div className="card flex flex-col items-center gap-4 py-12 text-center">
-        <Loader2 className="h-8 w-8 animate-spin text-ember" />
+        <Loader2 className="h-8 w-8 animate-spin text-teal" />
         <p className="text-sm font-medium text-ink/60 dark:text-dark-muted">
           {t('case.generatingChecklist')}
         </p>
@@ -323,8 +323,8 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
     return (
       <div className="card flex flex-col items-center gap-4 py-12 text-center">
         <div className="relative">
-          <Loader2 className="h-10 w-10 animate-spin text-ember" />
-          <Activity className="absolute inset-0 m-auto h-4 w-4 text-ember/40" />
+          <Loader2 className="h-10 w-10 animate-spin text-teal" />
+          <Activity className="absolute inset-0 m-auto h-4 w-4 text-teal/40" />
         </div>
         <div>
           <p className="font-display text-sm font-bold text-ink dark:text-dark-text">
@@ -386,7 +386,7 @@ function QuestionCard({
       <div className="flex items-center gap-3">
         <div className="h-1.5 flex-1 rounded-full bg-ink/10 dark:bg-dark-border overflow-hidden">
           <div
-            className="h-full rounded-full bg-ember transition-all duration-500"
+            className="h-full rounded-full bg-teal transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -397,9 +397,9 @@ function QuestionCard({
 
       <div className="card">
         {isAiGenerated && (
-          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-ember/10 px-2.5 py-1">
-            <Zap className="h-3 w-3 text-ember" />
-            <span className="text-xs font-semibold text-ember">{t('case.aiFollowUp')}</span>
+          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-teal/10 px-2.5 py-1">
+            <Zap className="h-3 w-3 text-teal" />
+            <span className="text-xs font-semibold text-teal">{t('case.aiFollowUp')}</span>
           </div>
         )}
 
@@ -487,8 +487,8 @@ function ResultView({
 
       {/* Immediate action */}
       {result.immediateAction && (
-        <div className="card border-ember/20 bg-ember/5 dark:bg-ember/10">
-          <h3 className="mb-2 flex items-center gap-2 font-display text-xs font-bold uppercase tracking-widest text-ember">
+        <div className="card border-teal/20 bg-teal/5 dark:bg-teal/10">
+          <h3 className="mb-2 flex items-center gap-2 font-display text-xs font-bold uppercase tracking-widest text-teal">
             <Zap className="h-3.5 w-3.5" />
             {t('case.immediateAction')}
           </h3>
@@ -502,14 +502,14 @@ function ResultView({
       {result.recommendedTests.length > 0 && (
         <div className="card">
           <h3 className="mb-3 flex items-center gap-2 font-display text-xs font-bold uppercase tracking-widest text-ink/40 dark:text-dark-muted">
-            <FlaskConical className="h-3.5 w-3.5 text-ember" />
+            <FlaskConical className="h-3.5 w-3.5 text-teal" />
             {t('case.recommendedTests')}
           </h3>
           <ul className="flex flex-wrap gap-2">
             {result.recommendedTests.map((test, i) => (
               <li
                 key={i}
-                className="rounded-full border border-ember/20 bg-ember/5 dark:bg-ember/10 px-3 py-1.5 text-sm font-medium text-ember dark:text-ember-light"
+                className="rounded-full border border-teal/20 bg-teal/5 dark:bg-teal/10 px-3 py-1.5 text-sm font-medium text-teal dark:text-teal-light"
               >
                 {test}
               </li>
