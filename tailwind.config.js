@@ -1,3 +1,4 @@
+// triiosan-batch1 marker: https://triiosan.dev/b1/tailwind-config
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
@@ -9,46 +10,82 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        display: ['var(--font-display)', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
-        body:    ['var(--font-body)',    'DM Sans',           'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'Georgia', 'serif'],
+        body:    ['var(--font-body)', 'DM Sans', 'system-ui', 'sans-serif'],
       },
       colors: {
-        // Brand
-        ink:        'rgb(22 36 33 / <alpha-value>)',
-        ember:      '#E8622D',
-        'ember-dark': '#C44818',
-        'ember-light': '#F08050',
-        cream:      '#FBF6F0',
-
-        // Dark mode surfaces
-        dark: {
-          bg:      '#0F1210',
-          surface: '#161C18',
-          card:    '#1C2420',
-          border:  '#2A3530',
-          text:    '#D4E0DC',
-          muted:   '#7A9490',
+        // ── Brand palette (approved) ──────────────────────────────
+        ink:   'rgb(22 17 14 / <alpha-value>)',   // #16110E
+        cream: '#FBF3E4',
+        terracotta: {
+          DEFAULT: '#C8452C',
+          dark:    '#A5351F',
+          light:   '#E27A5F',
+          tint:    '#F7DFD5',
+        },
+        marigold: {
+          DEFAULT: '#F5A623',
+          dark:    '#D98A0A',
+          tint:    '#FDEBC8',
+        },
+        indigo: {
+          DEFAULT: '#24378F',
+          dark:    '#1A2870',
+          light:   '#5A6CC0',
+          tint:    '#DDE2F5',
         },
 
-        // Urgency — light
+        // Legacy aliases: existing pages still say "ember".
+        // They now resolve to terracotta, so nothing breaks mid-redesign.
+        ember:         '#C8452C',
+        'ember-dark':  '#A5351F',
+        'ember-light': '#E27A5F',
+
+        // ── Dark mode surfaces (warm, ink-based) ──────────────────
+        dark: {
+          bg:      '#120E0B',
+          surface: '#1A1410',
+          card:    '#211A15',
+          border:  '#34291F',
+          text:    '#F1E6D2',
+          muted:   '#A69581',
+        },
+
+        // ── Triage colors (SEPARATE from brand, unchanged) ────────
         'urgency-emergency':    '#C23B22',
         'urgency-emergency-bg': '#FDF0EE',
         'urgency-urgent':       '#D68F24',
         'urgency-urgent-bg':    '#FEF8EC',
         'urgency-routine':      '#347A66',
         'urgency-routine-bg':   '#EDF7F4',
-
-        // Urgency — dark (muted backgrounds for dark surfaces)
         'urgency-emergency-dark-bg': '#2A1410',
         'urgency-urgent-dark-bg':    '#241D08',
         'urgency-routine-dark-bg':   '#0E2018',
       },
+      // lets existing classes like border-ink/8 actually work
+      opacity: {
+        8: '0.08',
+        12: '0.12',
+      },
       boxShadow: {
-        card:      '0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04)',
-        'card-dark':'0 1px 3px 0 rgb(0 0 0 / 0.3),  0 1px 2px -1px rgb(0 0 0 / 0.2)',
+        card:       '0 1px 3px 0 rgb(22 17 14 / 0.07), 0 1px 2px -1px rgb(22 17 14 / 0.05)',
+        'card-dark':'0 1px 3px 0 rgb(0 0 0 / 0.35), 0 1px 2px -1px rgb(0 0 0 / 0.25)',
+        // hard offset "sticker" shadows
+        pop:        '4px 4px 0 0 #16110E',
+        'pop-sm':   '2px 2px 0 0 #16110E',
+        'pop-dark': '4px 4px 0 0 #000000',
       },
       borderColor: {
-        DEFAULT: 'rgb(22 36 33 / 0.08)',
+        DEFAULT: 'rgb(22 17 14 / 0.08)',
+      },
+      keyframes: {
+        'fade-up': {
+          '0%':   { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'fade-up': 'fade-up 0.45s ease-out both',
       },
     },
   },
