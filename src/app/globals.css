@@ -1,27 +1,36 @@
+/* triiosan-batch1 marker: https://triiosan.dev/b1/globals-css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── Base ────────────────────────────────────────────────────────── */
+/* ── Tokens ──────────────────────────────────────────────────────── */
 @layer base {
   :root {
-    /* Light mode tokens */
-    --color-ink:           22 36 33;
-    --color-ember:         232 98 45;
-    --color-ember-dark:    196 72 24;
-    --color-cream:         251 246 240;
-    --color-surface:       255 255 255;
+    /* Brand (space-separated RGB so they work with rgb(var(--x) / a)) */
+    --color-ink:        22 17 14;      /* #16110E */
+    --color-cream:      251 243 228;   /* #FBF3E4 */
+    --color-terracotta: 200 69 44;     /* #C8452C */
+    --color-marigold:   245 166 35;    /* #F5A623 */
+    --color-indigo:     36 55 143;     /* #24378F */
+    --color-surface:    255 253 248;
 
-    /* Urgency */
-    --color-emergency:     194 59 34;
-    --color-urgent:        214 143 36;
-    --color-routine:       52 153 102;
+    /* Legacy alias */
+    --color-ember:      200 69 44;
+    --color-ember-dark: 165 53 31;
+
+    /* Triage (separate from brand, unchanged) */
+    --color-emergency:  194 59 34;
+    --color-urgent:     214 143 36;
+    --color-routine:    52 153 102;
+
+    /* Art pack masks (public/art) */
+    --art-size: 120px;
   }
 
   .dark {
-    --color-ink:           220 228 224;
-    --color-cream:         15 18 16;
-    --color-surface:       22 28 24;
+    --color-ink:     241 230 210;
+    --color-cream:   18 14 11;
+    --color-surface: 26 20 16;
   }
 
   html {
@@ -35,12 +44,13 @@
 
   h1, h2, h3, h4, h5, h6,
   .font-display {
-    font-family: var(--font-display, 'Plus Jakarta Sans', system-ui, sans-serif);
+    font-family: var(--font-display, Georgia, serif);
+    letter-spacing: -0.01em;
   }
 
   /* Focus rings */
   *:focus-visible {
-    @apply outline-none ring-2 ring-ember ring-offset-2 ring-offset-cream dark:ring-offset-dark-bg;
+    @apply outline-none ring-2 ring-terracotta ring-offset-2 ring-offset-cream dark:ring-offset-dark-bg;
   }
 
   /* Reduced motion */
@@ -52,32 +62,29 @@
   }
 }
 
-/* ── Pattern ─────────────────────────────────────────────────────── */
-/*
-  The pattern is the white-line-on-terracotta African textile motif
-  from the reference image. Implemented as an SVG data URI so it
-  works without any image files, loads instantly, and scales to any
-  element size without pixelation.
-*/
+/* ── Legacy textile pattern (still used by current pages) ────────── */
 @layer base {
   :root {
     --pattern-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Crect width='160' height='160' fill='none'/%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3C!-- Arch group top-left --%3E%3Cpath d='M10 60 Q10 30 40 30 Q70 30 70 60'/%3E%3Cpath d='M16 60 Q16 36 40 36 Q64 36 64 60'/%3E%3Cpath d='M22 60 Q22 42 40 42 Q58 42 58 60'/%3E%3C!-- Spiral top-right --%3E%3Cpath d='M120 20 Q140 20 140 40 Q140 60 120 60 Q100 60 100 40 Q100 25 115 25'/%3E%3Cpath d='M120 28 Q133 28 133 40 Q133 53 120 53 Q107 53 107 40 Q107 32 118 32'/%3E%3C!-- Zigzag middle --%3E%3Cpolyline points='5,90 20,75 35,90 50,75 65,90 80,75 95,90'/%3E%3Cpolyline points='5,98 20,83 35,98 50,83 65,98 80,83 95,98'/%3E%3C!-- Oval center --%3E%3Cellipse cx='80' cy='80' rx='16' ry='26'/%3E%3Cellipse cx='80' cy='80' rx='10' ry='20'/%3E%3C!-- T-bar bottom-left --%3E%3Cline x1='15' y1='120' x2='55' y2='120'/%3E%3Cline x1='35' y1='110' x2='35' y2='145'/%3E%3C!-- Nested arches bottom-right --%3E%3Cpath d='M100 155 Q100 125 125 125 Q150 125 150 155'/%3E%3Cpath d='M108 155 Q108 132 125 132 Q142 132 142 155'/%3E%3Cpath d='M116 155 Q116 139 125 139 Q134 139 134 155'/%3E%3C!-- Concentric curves left --%3E%3Cpath d='M5 30 Q5 10 20 10'/%3E%3Cpath d='M5 42 Q5 5 28 5'/%3E%3C!-- Dash marks scattered --%3E%3Cline x1='100' y1='105' x2='112' y2='105'/%3E%3Cline x1='118' y1='105' x2='130' y2='105'/%3E%3Cline x1='136' y1='105' x2='148' y2='105'/%3E%3Cline x1='104' y1='113' x2='116' y2='113'/%3E%3Cline x1='122' y1='113' x2='134' y2='113'/%3E%3C/g%3E%3C/svg%3E");
   }
 }
 
-/* ── Component classes ───────────────────────────────────────────── */
+/* ── Components ──────────────────────────────────────────────────── */
 @layer components {
 
   /* Cards */
   .card {
     @apply rounded-2xl border bg-white dark:bg-dark-card dark:border-dark-border p-5 shadow-card;
-    border-color: rgb(22 36 33 / 0.08);
+    border-color: rgb(22 17 14 / 0.1);
   }
 
-  /* Pattern overlays — applied as additional class on elements */
-  /* Both pattern-overlay and pattern-section use the ::before pseudo-element
-     approach so the pattern sits behind content and respects opacity at all times.
-     pattern-section is the simple shorthand; pattern-overlay adds position:relative. */
+  /* Sticker card: thick ink outline + hard offset shadow */
+  .card-pop {
+    @apply rounded-2xl border-2 border-ink bg-white p-5 shadow-pop
+           dark:border-dark-text dark:bg-dark-card dark:shadow-pop-dark;
+  }
+
+  /* Legacy pattern overlays (white line pattern on coloured bg) */
   .pattern-section {
     position: relative;
   }
@@ -100,7 +107,6 @@
   .pattern-section.pattern-strong::before,
   .pattern-overlay.pattern-strong::before { opacity: 0.22; }
 
-  /* In dark mode, lower opacity so the white pattern is subtle, not glaring */
   .dark .pattern-section::before,
   .dark .pattern-overlay::before { opacity: 0.04; }
   .dark .pattern-section.pattern-faint::before,
@@ -114,12 +120,12 @@
   .input {
     @apply w-full rounded-xl border bg-white dark:bg-dark-surface dark:border-dark-border
            px-4 py-3 text-sm text-ink dark:text-dark-text dark:placeholder:text-dark-muted
-           transition-colors focus:border-ember focus:outline-none focus:ring-2 focus:ring-ember/20
+           transition-colors focus:border-terracotta focus:outline-none focus:ring-2 focus:ring-terracotta/20
            disabled:opacity-50 disabled:cursor-not-allowed;
-    border-color: rgb(22 36 33 / 0.15);
+    border-color: rgb(22 17 14 / 0.18);
   }
   .input::placeholder {
-    color: rgb(22 36 33 / 0.3);
+    color: rgb(22 17 14 / 0.35);
   }
 
   .textarea {
@@ -128,21 +134,43 @@
 
   /* Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-ember px-5 py-3
-           font-display text-sm font-bold text-white shadow-sm
-           transition-all hover:bg-ember-dark active:scale-[0.98]
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-terracotta px-5 py-3
+           font-body text-sm font-bold text-white shadow-sm
+           transition-all hover:bg-terracotta-dark active:scale-[0.98]
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-marigold px-5 py-3
+           font-body text-sm font-bold text-ink shadow-sm
+           transition-all hover:bg-marigold-dark active:scale-[0.98]
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-indigo {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-indigo px-5 py-3
+           font-body text-sm font-bold text-white shadow-sm
+           transition-all hover:bg-indigo-dark active:scale-[0.98]
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  /* Sticker button: outline + hard shadow that presses in on tap */
+  .btn-pop {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-ink
+           bg-marigold px-5 py-3 font-body text-sm font-bold text-ink shadow-pop-sm
+           transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
+           disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-xl border
-           dark:border-dark-border px-5 py-3 font-display text-sm font-bold text-ink dark:text-dark-text
+           dark:border-dark-border px-5 py-3 font-body text-sm font-bold text-ink dark:text-dark-text
            transition-all dark:hover:bg-dark-surface active:scale-[0.98]
            disabled:opacity-50 disabled:cursor-not-allowed;
-    border-color: rgb(22 36 33 / 0.15);
+    border-color: rgb(22 17 14 / 0.18);
   }
   .btn-secondary:hover {
-    background-color: rgb(22 36 33 / 0.05);
+    background-color: rgb(22 17 14 / 0.05);
   }
   .dark .btn-secondary:hover {
     background-color: revert;
@@ -153,11 +181,11 @@
            text-sm font-medium dark:text-dark-muted
            transition-colors dark:hover:bg-dark-surface dark:hover:text-dark-text
            disabled:opacity-50 disabled:cursor-not-allowed;
-    color: rgb(22 36 33 / 0.6);
+    color: rgb(22 17 14 / 0.6);
   }
   .btn-ghost:hover {
-    background-color: rgb(22 36 33 / 0.05);
-    color: rgb(22 36 33 / 1);
+    background-color: rgb(22 17 14 / 0.05);
+    color: rgb(22 17 14 / 1);
   }
   .dark .btn-ghost {
     color: revert;
@@ -167,26 +195,85 @@
     color: revert;
   }
 
+  /* Chips and eyebrow labels */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-white
+           px-3 py-1 text-xs font-semibold text-ink
+           dark:border-dark-border dark:bg-dark-surface dark:text-dark-text;
+  }
+  .eyebrow {
+    @apply font-body text-xs font-bold uppercase tracking-[0.14em] text-terracotta;
+  }
+
+  /* Colour blocks for full-width sections */
+  .section-ink        { @apply bg-ink text-cream; }
+  .section-terracotta { @apply bg-terracotta text-cream; }
+  .section-marigold   { @apply bg-marigold text-ink; }
+  .section-indigo     { @apply bg-indigo text-cream; }
+  .section-cream      { @apply bg-cream text-ink dark:bg-dark-bg dark:text-dark-text; }
+
   /* Message bubbles */
   .bubble-patient {
-    @apply rounded-2xl rounded-br-sm bg-ember px-4 py-2.5 text-sm text-white shadow-sm;
+    @apply rounded-2xl rounded-br-sm bg-terracotta px-4 py-2.5 text-sm text-white shadow-sm;
   }
 
   .bubble-clinician {
     @apply rounded-2xl rounded-bl-sm border dark:border-dark-border
            bg-white dark:bg-dark-card px-4 py-2.5 text-sm text-ink dark:text-dark-text shadow-sm;
-    border-color: rgb(22 36 33 / 0.08);
+    border-color: rgb(22 17 14 / 0.1);
   }
 
   /* Progress dots */
   .step-dot {
     @apply h-1.5 w-1.5 rounded-full dark:bg-dark-border;
-    background-color: rgb(22 36 33 / 0.15);
+    background-color: rgb(22 17 14 / 0.15);
   }
   .step-dot-active {
-    @apply h-1.5 w-4 rounded-full bg-ember;
+    @apply h-1.5 w-4 rounded-full bg-terracotta;
   }
   .step-dot-done {
-    @apply h-1.5 w-1.5 rounded-full bg-ember/40;
+    @apply h-1.5 w-1.5 rounded-full bg-terracotta/40;
   }
+
+  /* ── Art pack (public/art) ───────────────────────────────────────
+     Mask art: pick a shape, then colour it with any text-* class.
+       <div class="art art-adinkra-1 h-24 w-24 text-terracotta" />
+     Tiled backdrop (add art-tile, size with --art-size):
+       <div class="art art-tile art-faint absolute inset-0 text-marigold" />
+     Full-colour art (stethoscope, doctor, ribbons, batik, *-sticker)
+     are plain <img src="/art/..."> files, not masks. */
+  .art {
+    display: block;
+    background-color: currentColor;
+    -webkit-mask-image: var(--art);
+    mask-image: var(--art);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+  .art-tile {
+    -webkit-mask-repeat: repeat;
+    mask-repeat: repeat;
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+    -webkit-mask-size: var(--art-size, 120px);
+    mask-size: var(--art-size, 120px);
+    pointer-events: none;
+  }
+  .art-faint  { opacity: 0.12; }
+  .art-soft   { opacity: 0.25; }
+
+  .art-adinkra-1  { --art: url('/art/adinkra-1.webp'); }
+  .art-adinkra-2  { --art: url('/art/adinkra-2.webp'); }
+  .art-adinkra-3  { --art: url('/art/adinkra-3.webp'); }
+  .art-adinkra-4  { --art: url('/art/adinkra-4.webp'); }
+  .art-adinkra-5  { --art: url('/art/adinkra-5.webp'); }
+  .art-footprints { --art: url('/art/footprints.webp'); }
+  .art-faces      { --art: url('/art/faces.webp'); }
+  .art-warp-grid  { --art: url('/art/warp-grid.webp'); }
+  .art-pill-ink   { --art: url('/art/pill-ink.webp'); }
+  .art-brain-ink  { --art: url('/art/brain-ink.webp'); }
 }
