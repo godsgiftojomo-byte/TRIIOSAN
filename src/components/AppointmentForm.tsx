@@ -1,16 +1,11 @@
+// triiosan-batch1 marker: https://triiosan.dev/b1/appointment-form
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CalendarCheck, Loader2 } from 'lucide-react'
 import { useLanguage } from '@/lib/i18n/LanguageContext'
-
-const FACILITY_KEYS = [
-  'facility.ooutch',
-  'facility.ghIkenne',
-  'facility.ghSagamu',
-  'facility.phcRemo',
-] as const
+import { FACILITIES } from '@/lib/facilities'
 
 /** 24 hours from now, rounded to the next hour, formatted for a
  * `datetime-local` input (YYYY-MM-DDTHH:mm, local time, no timezone). */
@@ -69,9 +64,9 @@ export function AppointmentForm({ caseId }: { caseId: string }) {
   }
 
   return (
-    <div className="card border-ember/20">
+    <div className="card border-terracotta/25">
       <h3 className="mb-3 flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wide text-ink/50">
-        <CalendarCheck className="h-4 w-4 text-ember" />
+        <CalendarCheck className="h-4 w-4 text-terracotta" />
         {t('clinician.scheduleAppointment')}
       </h3>
 
@@ -79,7 +74,7 @@ export function AppointmentForm({ caseId }: { caseId: string }) {
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-ink/80">
             {t('clinician.appointmentFacility')}
-            <span className="text-ember"> *</span>
+            <span className="text-terracotta"> *</span>
           </span>
           <select
             value={facility}
@@ -91,9 +86,9 @@ export function AppointmentForm({ caseId }: { caseId: string }) {
             <option value="" disabled>
               —
             </option>
-            {FACILITY_KEYS.map((key) => (
-              <option key={key} value={t(key)}>
-                {t(key)}
+            {FACILITIES.map((f) => (
+              <option key={f.id} value={f.name}>
+                {f.name}
               </option>
             ))}
           </select>
@@ -102,7 +97,7 @@ export function AppointmentForm({ caseId }: { caseId: string }) {
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-ink/80">
             {t('clinician.appointmentPurpose')}
-            <span className="text-ember"> *</span>
+            <span className="text-terracotta"> *</span>
           </span>
           <textarea
             value={purpose}
@@ -118,7 +113,7 @@ export function AppointmentForm({ caseId }: { caseId: string }) {
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-ink/80">
             {t('clinician.appointmentDate')}
-            <span className="text-ember"> *</span>
+            <span className="text-terracotta"> *</span>
           </span>
           <input
             type="datetime-local"
