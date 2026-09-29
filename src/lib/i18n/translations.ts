@@ -1,3 +1,4 @@
+// triiosan-batch1 marker: https://triiosan.dev/b1/translations
 import type { Language } from '@/lib/supabase/types'
 
 export const LANGUAGES: { code: Language; label: string; nativeLabel: string }[] = [
@@ -122,12 +123,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'clinician.confirmClose': 'Schedule & close case',
     'clinician.patientInfo': 'Patient',
     'clinician.submittedAt': 'Submitted',
-
-    // Facilities (placeholder list)
-    'facility.ooutch': 'OOU Teaching Hospital, Sagamu',
-    'facility.ghIkenne': 'General Hospital, Ikenne',
-    'facility.ghSagamu': 'General Hospital, Sagamu',
-    'facility.phcRemo': 'Primary Health Centre, Remo North',
 
     // Misc
     'common.loading': 'Loading...',
@@ -258,11 +253,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'clinician.patientInfo': 'Aláìsàn',
     'clinician.submittedAt': 'Fi ránṣẹ́ ní',
 
-    'facility.ooutch': 'Ilé Ìwòsàn Ẹ̀kọ́ OOU, Sagamu',
-    'facility.ghIkenne': 'Ilé Ìwòsàn Gbogbogbòò, Ikenne',
-    'facility.ghSagamu': 'Ilé Ìwòsàn Gbogbogbòò, Sagamu',
-    'facility.phcRemo': 'Ilé Ìwòsàn Alákọ́ọ̀bẹ̀rẹ̀, Remo North',
-
     'common.loading': 'Ń kò...',
     'common.error': 'Àṣìṣe kan ṣẹlẹ̀.',
     'common.back': 'Padà',
@@ -389,11 +379,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'clinician.confirmClose': 'Shirya kuma rufe lamari',
     'clinician.patientInfo': 'Mara lafiya',
     'clinician.submittedAt': 'An aika',
-
-    'facility.ooutch': 'Asibitin Koyarwa na OOU, Sagamu',
-    'facility.ghIkenne': 'Babban Asibiti, Ikenne',
-    'facility.ghSagamu': 'Babban Asibiti, Sagamu',
-    'facility.phcRemo': 'Cibiyar Kiwon Lafiya ta Farko, Remo North',
 
     'common.loading': 'Ana lodawa...',
     'common.error': 'Akwai matsala.',
@@ -522,11 +507,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'clinician.patientInfo': 'Onye ọrịa',
     'clinician.submittedAt': 'Ezipụrụ',
 
-    'facility.ooutch': 'Ụlọ Ọgwụ Nkuzi OOU, Sagamu',
-    'facility.ghIkenne': 'Ụlọ Ọgwụ Izugbe, Ikenne',
-    'facility.ghSagamu': 'Ụlọ Ọgwụ Izugbe, Sagamu',
-    'facility.phcRemo': 'Ebe Nlekọta Ahụike Mbụ, Remo North',
-
     'common.loading': 'Na-ebu...',
     'common.error': 'Ihe ọjọọ mere.',
     'common.back': 'Laghachi',
@@ -653,11 +633,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'clinician.confirmClose': 'Schedule & close case',
     'clinician.patientInfo': 'Patient',
     'clinician.submittedAt': 'Submitted',
-
-    'facility.ooutch': 'OOU Teaching Hospital, Sagamu',
-    'facility.ghIkenne': 'General Hospital, Ikenne',
-    'facility.ghSagamu': 'General Hospital, Sagamu',
-    'facility.phcRemo': 'Primary Health Centre, Remo North',
 
     'common.loading': 'Dey load...',
     'common.error': 'Something no work.',
