@@ -1,3 +1,4 @@
+// triiosan-batch1 marker: https://triiosan.dev/b1/portal-signup
 'use client'
 
 import { useState } from 'react'
@@ -105,7 +106,7 @@ export default function ClinicianSignupPage() {
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
-            <Wordmark className="justify-center" />
+            <Wordmark className="justify-center" inverted />
             <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-dark-border bg-dark-card px-3 py-1.5">
               <Stethoscope className="h-3.5 w-3.5 text-ember" />
               <span className="text-xs font-semibold text-dark-muted">Clinician Portal</span>
@@ -187,7 +188,7 @@ export default function ClinicianSignupPage() {
                   onChange={(e) => setFacility(e.target.value)}
                   disabled={loading}
                   className="input"
-                  placeholder="e.g. OOU Teaching Hospital"
+                  placeholder="e.g. Crestfield Teaching Hospital"
                 />
               </label>
 
@@ -238,4 +239,3 @@ export default function ClinicianSignupPage() {
     </div>
   )
 }
-
