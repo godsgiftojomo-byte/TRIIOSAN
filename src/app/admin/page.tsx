@@ -1,3 +1,4 @@
+// triiosan-batch5 marker: https://triiosan.dev/b5/admin
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
@@ -84,7 +85,7 @@ export default function AdminPage() {
       <div className="flex min-h-screen flex-col items-center justify-center bg-dark-bg px-4">
         <div className="w-full max-w-xs">
           <div className="mb-8 text-center">
-            <Wordmark className="justify-center" />
+            <Wordmark className="justify-center" inverted />
             <p className="mt-2 text-xs font-semibold uppercase tracking-widest text-dark-muted">
               Admin Console
             </p>
@@ -102,7 +103,7 @@ export default function AdminPage() {
               {loginError && (
                 <p className="text-sm text-urgency-emergency">{loginError}</p>
               )}
-              <button type="submit" disabled={loginLoading} className="btn-primary w-full">
+              <button type="submit" disabled={loginLoading} className="btn-accent w-full">
                 {loginLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign in'}
               </button>
             </form>
@@ -122,7 +123,7 @@ export default function AdminPage() {
       <header className="sticky top-0 z-10 border-b border-dark-border bg-dark-surface/90 backdrop-blur-sm">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <Wordmark />
+            <Wordmark inverted />
             <span className="rounded-full border border-dark-border px-2 py-0.5 text-xs font-semibold text-dark-muted">
               Admin
             </span>
@@ -144,7 +145,7 @@ export default function AdminPage() {
             <ShieldAlert className="h-5 w-5 shrink-0 text-urgency-urgent" />
             <p className="text-sm text-dark-text">
               <span className="font-bold">{pendingClinicians.length} clinician{pendingClinicians.length > 1 ? 's' : ''}</span> pending verification.{' '}
-              <button onClick={() => setActiveTab('clinicians')} className="underline text-ember">Review now</button>
+              <button onClick={() => setActiveTab('clinicians')} className="font-semibold text-marigold underline">Review now</button>
             </p>
           </div>
         )}
@@ -157,7 +158,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab(tab)}
               className={`flex-1 rounded-lg py-2 text-sm font-semibold capitalize transition-colors ${
                 activeTab === tab
-                  ? 'bg-ember text-white'
+                  ? 'bg-terracotta text-white'
                   : 'text-dark-muted hover:text-dark-text'
               }`}
             >
@@ -173,7 +174,7 @@ export default function AdminPage() {
 
         {loading && (
           <div className="flex justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-ember" />
+            <Loader2 className="h-8 w-8 animate-spin text-terracotta" />
           </div>
         )}
 
@@ -209,7 +210,7 @@ export default function AdminPage() {
                   return (
                     <div key={date} className="flex flex-1 flex-col items-center gap-1" title={`${date}: ${count}`}>
                       <div
-                        className="w-full rounded-sm bg-ember/60 transition-all"
+                        className="w-full rounded-sm bg-marigold/70 transition-all"
                         style={{ height: `${height}%` }}
                       />
                     </div>
@@ -275,7 +276,7 @@ export default function AdminPage() {
                       className={`w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
                         c.verification_status === 'verified'
                           ? 'border border-urgency-emergency/30 text-urgency-emergency hover:bg-urgency-emergency-dark-bg'
-                          : 'bg-ember text-white hover:bg-ember-dark'
+                          : 'bg-terracotta text-white hover:bg-terracotta-dark'
                       }`}
                     >
                       {c.verification_status === 'verified' ? 'Revoke verification' : 'Verify clinician'}
