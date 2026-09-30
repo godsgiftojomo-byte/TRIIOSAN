@@ -1,3 +1,4 @@
+// triiosan-batch5 marker: https://triiosan.dev/b5/history
 import Link from 'next/link'
 import { AlertTriangle, Clock, CheckCircle2, ChevronRight, PlusCircle } from 'lucide-react'
 import { requireProfile } from '@/lib/auth'
@@ -31,13 +32,17 @@ export default async function HistoryPage() {
 
       <main className="px-4 py-6 sm:px-8 sm:py-10">
         <div className="mx-auto max-w-2xl space-y-4">
-          <h1 className="font-display text-xl font-extrabold text-ink sm:text-2xl">
-            {t(lang, 'history.title')}
-          </h1>
+          <div>
+            <p className="eyebrow mb-1">Triiosan</p>
+            <h1 className="font-display text-2xl font-extrabold text-ink dark:text-dark-text sm:text-3xl">
+              {t(lang, 'history.title')}
+            </h1>
+          </div>
 
           {typedCases.length === 0 ? (
-            <div className="card text-center">
-              <p className="text-sm text-ink/60">{t(lang, 'history.empty')}</p>
+            <div className="card-pop text-center">
+              <div aria-hidden className="art art-footprints mx-auto mb-3 h-16 w-16 text-terracotta opacity-30" />
+              <p className="text-sm text-ink/70 dark:text-dark-muted">{t(lang, 'history.empty')}</p>
               <Link href="/dashboard" className="btn-primary mt-4 inline-flex">
                 <PlusCircle className="h-4 w-4" />
                 {t(lang, 'history.startNew')}
@@ -52,25 +57,25 @@ export default async function HistoryPage() {
                   <li key={c.id}>
                     <Link
                       href={`/case/${c.id}`}
-                      className="card flex items-center gap-3 transition-colors hover:border-ember/30"
+                      className="card flex items-center gap-3 transition-all hover:-translate-y-0.5 hover:border-terracotta/50 hover:shadow-pop-sm"
                     >
                       <div
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                          config?.bg || 'bg-ink/5'
+                          config?.bg || 'bg-ink/5 dark:bg-dark-border'
                         }`}
                       >
                         {Icon ? (
                           <Icon className={`h-5 w-5 ${config!.color}`} />
                         ) : (
-                          <Clock className="h-5 w-5 text-ink/30" />
+                          <Clock className="h-5 w-5 text-ink/30 dark:text-dark-muted" />
                         )}
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-ink">
+                        <p className="truncate text-sm font-semibold text-ink dark:text-dark-text">
                           {c.primary_complaint}
                         </p>
-                        <div className="mt-1 flex items-center gap-2 text-xs text-ink/50">
+                        <div className="mt-1 flex items-center gap-2 text-xs text-ink/60 dark:text-dark-muted">
                           <span>
                             {new Date(c.created_at).toLocaleDateString(undefined, {
                               dateStyle: 'medium',
@@ -79,7 +84,7 @@ export default async function HistoryPage() {
                           <span aria-hidden="true">·</span>
                           <span
                             className={
-                              c.status === 'open' ? 'font-medium text-ember' : 'text-ink/40'
+                              c.status === 'open' ? 'font-bold text-terracotta dark:text-terracotta-light' : 'text-ink/40 dark:text-dark-muted'
                             }
                           >
                             {t(lang, c.status === 'open' ? 'thread.statusOpen' : 'thread.statusClosed')}
@@ -87,7 +92,7 @@ export default async function HistoryPage() {
                         </div>
                       </div>
 
-                      <ChevronRight className="h-4 w-4 shrink-0 text-ink/30" />
+                      <ChevronRight className="h-4 w-4 shrink-0 text-ink/30 dark:text-dark-muted" />
                     </Link>
                   </li>
                 )
