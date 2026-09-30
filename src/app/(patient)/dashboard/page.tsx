@@ -1,3 +1,4 @@
+// triiosan-batch4 marker: https://triiosan.dev/b4/dashboard
 import Link from 'next/link'
 import { MessageCircle, ArrowRight } from 'lucide-react'
 import { requireProfile } from '@/lib/auth'
@@ -30,22 +31,24 @@ export default async function DashboardPage() {
     <div className="min-h-screen">
       <AppNav role="patient" fullName={profile.full_name} />
       <main className="px-4 py-6 sm:px-8 sm:py-10">
-        <div className="mx-auto max-w-2xl space-y-4">
+        <div className="mx-auto max-w-2xl space-y-5">
           {openCase && (
             <Link
               href={`/case/${openCase.id}`}
-              className="card flex items-center gap-3 border-ember/20 bg-ember-50 transition-colors hover:border-ember/40"
+              className="flex items-center gap-3 rounded-2xl border-2 border-ink bg-marigold-tint p-4 shadow-pop-sm transition-transform hover:-translate-y-0.5 dark:border-dark-text dark:bg-dark-card"
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white">
-                <MessageCircle className="h-5 w-5 text-ember" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-marigold dark:border-dark-text">
+                <MessageCircle className="h-5 w-5 text-ink" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-ink">
+                <p className="text-sm font-bold text-ink dark:text-dark-text">
                   {t(lang, 'dashboard.openCaseBanner')}
                 </p>
-                <p className="mt-0.5 truncate text-sm text-ink/60">{openCase.primary_complaint}</p>
+                <p className="mt-0.5 truncate text-sm text-ink/70 dark:text-dark-muted">
+                  {openCase.primary_complaint}
+                </p>
               </div>
-              <ArrowRight className="h-4 w-4 shrink-0 text-ember" />
+              <ArrowRight className="h-4 w-4 shrink-0 text-ink dark:text-dark-text" />
             </Link>
           )}
 
