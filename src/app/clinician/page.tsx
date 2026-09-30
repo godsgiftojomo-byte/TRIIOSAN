@@ -1,3 +1,4 @@
+// triiosan-batch5 marker: https://triiosan.dev/b5/clinician-queue
 import Link from 'next/link'
 import { AlertTriangle, Clock, CheckCircle2, ChevronRight, ShieldAlert } from 'lucide-react'
 import { requireProfile } from '@/lib/auth'
@@ -56,20 +57,24 @@ export default async function ClinicianQueuePage() {
 
       <main className="px-4 py-6 sm:px-8 sm:py-10">
         <div className="mx-auto max-w-2xl space-y-4">
-          <h1 className="font-display text-xl font-extrabold text-ink sm:text-2xl">
-            {t(lang, 'clinician.queueTitle')}
-          </h1>
+          <div>
+            <p className="eyebrow mb-1">Triiosan</p>
+            <h1 className="font-display text-2xl font-extrabold text-ink dark:text-dark-text sm:text-3xl">
+              {t(lang, 'clinician.queueTitle')}
+            </h1>
+          </div>
 
           {!isVerified && (
-            <div className="flex items-start gap-3 rounded-xl border border-urgency-urgent/30 bg-urgency-urgent-bg p-4">
+            <div className="flex items-start gap-3 rounded-xl border border-urgency-urgent/30 bg-urgency-urgent-bg p-4 dark:bg-urgency-urgent-dark-bg">
               <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-urgency-urgent" />
-              <p className="text-sm leading-relaxed text-ink/80">{t(lang, 'auth.pendingBanner')}</p>
+              <p className="text-sm leading-relaxed text-ink/80 dark:text-dark-text">{t(lang, 'auth.pendingBanner')}</p>
             </div>
           )}
 
           {sortedCases.length === 0 ? (
-            <div className="card text-center">
-              <p className="text-sm text-ink/60">{t(lang, 'clinician.queueEmpty')}</p>
+            <div className="card-pop text-center">
+              <div aria-hidden className="art art-adinkra-3 mx-auto mb-3 h-16 w-16 text-indigo opacity-30 dark:text-indigo-light" />
+              <p className="text-sm text-ink/70 dark:text-dark-muted">{t(lang, 'clinician.queueEmpty')}</p>
             </div>
           ) : (
             <ul className="space-y-2">
@@ -82,31 +87,31 @@ export default async function ClinicianQueuePage() {
                   <li key={c.id}>
                     <Link
                       href={`/case/${c.id}`}
-                      className="card flex items-center gap-3 transition-colors hover:border-ember/30"
+                      className="card flex items-center gap-3 transition-all hover:-translate-y-0.5 hover:border-terracotta/50 hover:shadow-pop-sm"
                     >
                       <div
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                          config?.bg || 'bg-ink/5'
+                          config?.bg || 'bg-ink/5 dark:bg-dark-border'
                         }`}
                       >
                         {Icon ? (
                           <Icon className={`h-5 w-5 ${config!.color}`} />
                         ) : (
-                          <Clock className="h-5 w-5 text-ink/30" />
+                          <Clock className="h-5 w-5 text-ink/30 dark:text-dark-muted" />
                         )}
                       </div>
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <p className="truncate text-sm font-semibold text-ink">{patientName}</p>
+                          <p className="truncate text-sm font-semibold text-ink dark:text-dark-text">{patientName}</p>
                           {config && (
                             <span className={`font-display text-xs font-bold ${config.color}`}>
                               {t(lang, `case.urgency.${c.urgency}`)}
                             </span>
                           )}
                         </div>
-                        <p className="mt-0.5 truncate text-sm text-ink/60">{c.primary_complaint}</p>
-                        <p className="mt-1 text-xs text-ink/40">
+                        <p className="mt-0.5 truncate text-sm text-ink/70 dark:text-dark-muted">{c.primary_complaint}</p>
+                        <p className="mt-1 text-xs text-ink/50 dark:text-dark-muted">
                           {t(lang, 'clinician.submittedAt')}{' '}
                           {new Date(c.created_at).toLocaleString(undefined, {
                             dateStyle: 'medium',
@@ -115,7 +120,7 @@ export default async function ClinicianQueuePage() {
                         </p>
                       </div>
 
-                      <ChevronRight className="h-4 w-4 shrink-0 text-ink/30" />
+                      <ChevronRight className="h-4 w-4 shrink-0 text-ink/30 dark:text-dark-muted" />
                     </Link>
                   </li>
                 )
