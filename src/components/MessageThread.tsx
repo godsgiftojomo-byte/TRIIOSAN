@@ -1,3 +1,4 @@
+// triiosan-batch5 marker: https://triiosan.dev/b5/message-thread
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
@@ -103,7 +104,7 @@ export function MessageThread({
   }
 
   return (
-    <div className="card overflow-hidden p-0 flex flex-col">
+    <div className="card-pop overflow-hidden p-0 flex flex-col">
       <div className="border-b border-ink/8 dark:border-dark-border px-4 py-3 flex items-center justify-between">
         <h3 className="font-display text-sm font-bold text-ink dark:text-dark-text">
           {t('thread.title')}
