@@ -1,3 +1,4 @@
+// triiosan-batch3 marker: https://triiosan.dev/b3/login
 'use client'
 
 import { useState } from 'react'
@@ -5,7 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Loader2, Eye, EyeOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { Wordmark } from '@/components/Wordmark'
+import { AuthShell } from '@/components/AuthShell'
 
 export default function PatientLoginPage() {
   const router = useRouter()
@@ -42,86 +43,71 @@ export default function PatientLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className="pattern-overlay pattern-strong h-2 bg-ember" />
+    <AuthShell variant="patient" label="Patient portal">
+      <h1 className="mb-5 font-display text-xl font-extrabold text-ink dark:text-dark-text">
+        Sign in to your account
+      </h1>
 
-      <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
-        <div className="w-full max-w-sm">
-          <div className="mb-8 text-center">
-            <Wordmark className="justify-center" />
-            <p className="mt-2 text-sm text-ink/50 dark:text-dark-muted">
-              Patient portal
-            </p>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-medium text-ink/70 dark:text-dark-muted">
+            Email address
+          </span>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            disabled={loading}
+            className="input"
+            placeholder="you@example.com"
+          />
+        </label>
+
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-medium text-ink/70 dark:text-dark-muted">
+            Password
+          </span>
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              disabled={loading}
+              className="input pr-11"
+              placeholder="••••••••"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-ink/40 hover:text-ink/70"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
+        </label>
 
-          <div className="card">
-            <h1 className="font-display text-lg font-extrabold text-ink dark:text-dark-text mb-5">
-              Sign in to your account
-            </h1>
+        {error && (
+          <p className="rounded-xl bg-urgency-emergency-bg dark:bg-urgency-emergency-dark-bg p-3 text-sm text-urgency-emergency">
+            {error}
+          </p>
+        )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-medium text-ink/70 dark:text-dark-muted">
-                  Email address
-                </span>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                  disabled={loading}
-                  className="input"
-                  placeholder="you@example.com"
-                />
-              </label>
+        <button type="submit" disabled={loading} className="btn-primary mt-2 w-full">
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign in'}
+        </button>
+      </form>
 
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-medium text-ink/70 dark:text-dark-muted">
-                  Password
-                </span>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    autoComplete="current-password"
-                    disabled={loading}
-                    className="input pr-11"
-                    placeholder="••••••••"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-ink/30 hover:text-ink/60"
-                    tabIndex={-1}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </label>
-
-              {error && (
-                <p className="rounded-xl bg-urgency-emergency-bg dark:bg-urgency-emergency-dark-bg p-3 text-sm text-urgency-emergency">
-                  {error}
-                </p>
-              )}
-
-              <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign in'}
-              </button>
-            </form>
-
-            <p className="mt-5 text-center text-sm text-ink/50 dark:text-dark-muted">
-              New patient?{' '}
-              <Link href="/signup" className="font-semibold text-ember hover:text-ember-dark">
-                Create an account
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+      <p className="mt-5 text-center text-sm text-ink/60 dark:text-dark-muted">
+        New patient?{' '}
+        <Link href="/signup" className="font-semibold text-terracotta hover:text-terracotta-dark">
+          Create an account
+        </Link>
+      </p>
+    </AuthShell>
   )
 }
