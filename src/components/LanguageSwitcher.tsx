@@ -1,3 +1,4 @@
+// triiosan-batch4 marker: https://triiosan.dev/b4/language-switcher
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
@@ -29,16 +30,16 @@ export function LanguageSwitcher() {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center gap-1.5 rounded-full border border-ink/10 bg-white px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:border-ember/40"
+        className="flex items-center gap-1.5 rounded-full border border-ink/15 bg-white px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:border-terracotta/50 dark:border-dark-border dark:bg-dark-surface dark:text-dark-text"
       >
-        <Globe className="h-4 w-4 text-ember" aria-hidden="true" />
+        <Globe className="h-4 w-4 text-terracotta" aria-hidden="true" />
         {current.nativeLabel}
       </button>
 
       {open && (
         <ul
           role="listbox"
-          className="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-lg border border-ink/10 bg-white py-1 shadow-card"
+          className="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-lg border-2 border-ink bg-white py-1 shadow-pop-sm dark:border-dark-text dark:bg-dark-card"
         >
           {LANGUAGES.map((l) => (
             <li key={l.code}>
@@ -50,15 +51,15 @@ export function LanguageSwitcher() {
                   setLang(l.code)
                   setOpen(false)
                 }}
-                className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-ink hover:bg-ember-50"
+                className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-ink hover:bg-terracotta-tint dark:text-dark-text dark:hover:bg-dark-surface"
               >
                 <span>
                   {l.nativeLabel}
                   {l.nativeLabel !== l.label && (
-                    <span className="ml-1 text-ink/40">({l.label})</span>
+                    <span className="ml-1 text-ink/40 dark:text-dark-muted">({l.label})</span>
                   )}
                 </span>
-                {l.code === lang && <Check className="h-4 w-4 text-ember" aria-hidden="true" />}
+                {l.code === lang && <Check className="h-4 w-4 text-terracotta" aria-hidden="true" />}
               </button>
             </li>
           ))}
