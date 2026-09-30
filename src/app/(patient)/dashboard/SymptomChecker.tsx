@@ -1,3 +1,4 @@
+// triiosan-batch4 marker: https://triiosan.dev/b4/symptom-checker
 'use client'
 
 import { useState } from 'react'
@@ -224,10 +225,14 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
   if (step === 'complaint' || step === 'loading-base') {
     return (
       <div className="space-y-4">
-        <div className="card pattern-overlay pattern-faint">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-ember/10">
-              <Activity className="h-5 w-5 text-ember" />
+        <div className="card-pop relative overflow-hidden">
+          <div
+            aria-hidden
+            className="art art-adinkra-2 pointer-events-none absolute -right-6 -top-6 h-28 w-28 text-terracotta opacity-10"
+          />
+          <div className="relative mb-4 flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-ink bg-terracotta dark:border-dark-text">
+              <Activity className="h-5 w-5 text-cream" />
             </div>
             <div>
               <h1 className="font-display text-lg font-extrabold text-ink dark:text-dark-text">
@@ -237,7 +242,7 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
             </div>
           </div>
 
-          <form onSubmit={handleComplaintSubmit} className="space-y-4">
+          <form onSubmit={handleComplaintSubmit} className="relative space-y-4">
             <textarea
               value={complaint}
               onChange={(e) => setComplaint(e.target.value)}
@@ -292,7 +297,7 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
   if (step === 'loading-ai-questions') {
     return (
       <div className="card flex flex-col items-center gap-4 py-12 text-center">
-        <Loader2 className="h-8 w-8 animate-spin text-ember" />
+        <Loader2 className="h-8 w-8 animate-spin text-terracotta" />
         <p className="text-sm font-medium text-ink/60 dark:text-dark-muted">
           {t('case.generatingChecklist')}
         </p>
@@ -323,8 +328,8 @@ export function SymptomChecker({ preferredLanguage }: { preferredLanguage: Langu
     return (
       <div className="card flex flex-col items-center gap-4 py-12 text-center">
         <div className="relative">
-          <Loader2 className="h-10 w-10 animate-spin text-ember" />
-          <Activity className="absolute inset-0 m-auto h-4 w-4 text-ember/40" />
+          <Loader2 className="h-10 w-10 animate-spin text-terracotta" />
+          <Activity className="absolute inset-0 m-auto h-4 w-4 text-terracotta/40" />
         </div>
         <div>
           <p className="font-display text-sm font-bold text-ink dark:text-dark-text">
@@ -386,7 +391,7 @@ function QuestionCard({
       <div className="flex items-center gap-3">
         <div className="h-1.5 flex-1 rounded-full bg-ink/10 dark:bg-dark-border overflow-hidden">
           <div
-            className="h-full rounded-full bg-ember transition-all duration-500"
+            className="h-full rounded-full bg-terracotta transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -395,11 +400,11 @@ function QuestionCard({
         </span>
       </div>
 
-      <div className="card">
+      <div className="card-pop">
         {isAiGenerated && (
-          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-ember/10 px-2.5 py-1">
-            <Zap className="h-3 w-3 text-ember" />
-            <span className="text-xs font-semibold text-ember">{t('case.aiFollowUp')}</span>
+          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-indigo-tint px-2.5 py-1 dark:bg-indigo/30">
+            <Zap className="h-3 w-3 text-indigo dark:text-indigo-light" />
+            <span className="text-xs font-semibold text-indigo dark:text-indigo-light">{t('case.aiFollowUp')}</span>
           </div>
         )}
 
@@ -487,8 +492,8 @@ function ResultView({
 
       {/* Immediate action */}
       {result.immediateAction && (
-        <div className="card border-ember/20 bg-ember/5 dark:bg-ember/10">
-          <h3 className="mb-2 flex items-center gap-2 font-display text-xs font-bold uppercase tracking-widest text-ember">
+        <div className="card border-indigo/25 bg-indigo-tint dark:border-indigo-light/30 dark:bg-indigo/15">
+          <h3 className="mb-2 flex items-center gap-2 font-display text-xs font-bold uppercase tracking-widest text-indigo dark:text-indigo-light">
             <Zap className="h-3.5 w-3.5" />
             {t('case.immediateAction')}
           </h3>
@@ -502,14 +507,14 @@ function ResultView({
       {result.recommendedTests.length > 0 && (
         <div className="card">
           <h3 className="mb-3 flex items-center gap-2 font-display text-xs font-bold uppercase tracking-widest text-ink/40 dark:text-dark-muted">
-            <FlaskConical className="h-3.5 w-3.5 text-ember" />
+            <FlaskConical className="h-3.5 w-3.5 text-indigo dark:text-indigo-light" />
             {t('case.recommendedTests')}
           </h3>
           <ul className="flex flex-wrap gap-2">
             {result.recommendedTests.map((test, i) => (
               <li
                 key={i}
-                className="rounded-full border border-ember/20 bg-ember/5 dark:bg-ember/10 px-3 py-1.5 text-sm font-medium text-ember dark:text-ember-light"
+                className="rounded-full border border-indigo/25 bg-indigo-tint px-3 py-1.5 text-sm font-medium text-indigo dark:border-indigo-light/30 dark:bg-indigo/15 dark:text-indigo-light"
               >
                 {test}
               </li>
